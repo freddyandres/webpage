@@ -1,0 +1,17 @@
+{
+  "name": "generales-de-dios-tools",
+  "private": true,
+  "type": "module",
+  "description": "Herramientas para regenerar recursos estáticos del portal (mapa mundial).",
+  "scripts": {
+    "build:map": "node build-map.mjs",
+    "build:icons": "node build-icons.mjs",
+    "build": "node build-map.mjs && node build-icons.mjs"
+  },
+  "devDependencies": {
+    "d3-geo": "3.1.1",
+    "topojson-client": "3.1.0",
+    "world-atlas": "2.0.2",
+    "lucide-static": "0.460.0"
+  }
+}
