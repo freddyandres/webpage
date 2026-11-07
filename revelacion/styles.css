@@ -397,6 +397,25 @@ h1.is-revealed small { font-family: var(--f-script); font-weight: 400; font-size
 .team-btn.nina[aria-pressed="true"] { border-color: var(--pink); background: linear-gradient(180deg, #fff, #fff0f5); }
 .team-btn[aria-pressed="true"] svg { animation: beat 1.1s ease-in-out infinite; }
 @keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.22); } 30% { transform: scale(1); } 45% { transform: scale(1.14); } }
+.scoreboard {
+  margin: 22px auto 0; padding: 16px 16px 12px; border-radius: 24px;
+  background: rgba(255,255,255,.85); box-shadow: var(--shadow-soft);
+}
+.sb-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-family: var(--f-head); }
+.sb-side { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.sb-side svg { width: 22px; height: 20px; }
+.sb-side b { font-size: 1.6rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.sb-side small { font-size: .9rem; color: var(--brown); }
+.sb-side.nino { color: var(--blue-ink); } .sb-side.nino svg { fill: var(--blue-deep); }
+.sb-side.nina { color: var(--pink-ink); } .sb-side.nina svg { fill: var(--pink-deep); }
+.sb-side b.bump { animation: tick .5s cubic-bezier(.3,1.6,.5,1); }
+.sb-total { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--brown-soft); }
+.sb-bar { display: flex; height: 26px; margin-top: 10px; border-radius: 999px; overflow: hidden; background: #f3ece4; }
+.sb-fill { display: flex; align-items: center; min-width: 0; transition: flex-grow 1s cubic-bezier(.2,.8,.2,1); }
+.sb-fill i { font-style: normal; font-family: var(--f-head); font-weight: 700; font-size: .8rem; color: #fff; padding: 0 10px; white-space: nowrap; }
+.sb-fill.nino { justify-content: flex-start; background: linear-gradient(90deg, var(--blue-deep), var(--blue)); }
+.sb-fill.nina { justify-content: flex-end; background: linear-gradient(90deg, var(--pink), var(--pink-deep)); }
+.sb-note { margin: 8px 0 0; font-size: .78rem; color: var(--brown-soft); }
 .team-msg { min-height: 1.5em; margin: 14px 0 0; font-family: var(--f-head); font-weight: 600; color: var(--brown-deep); }
 
 /* ---------- INVITACIÓN ---------- */
@@ -437,6 +456,10 @@ h1.is-revealed small { font-family: var(--f-script); font-weight: 400; font-size
 .dress-heart { flex: none; width: 52px; height: 48px; animation: beat 1.6s ease-in-out infinite; }
 .dress-row.nino .dress-heart { fill: #7fbfe6; }
 .dress-row.nina .dress-heart { fill: #ef7fa5; animation-delay: .5s; }
+.btn-photo { min-height: 44px; padding: 10px 18px; font-size: .95rem; color: #fff; justify-self: center; margin-top: -6px; }
+.btn-photo.nino { background: linear-gradient(135deg, var(--blue-deep), #7fbfe6); box-shadow: 0 12px 22px -12px rgba(90,163,211,.8); }
+.btn-photo.nina { background: linear-gradient(135deg, var(--pink-deep), #f39bba); box-shadow: 0 12px 22px -12px rgba(229,119,158,.8); }
+.btn-photo:hover { transform: translateY(-2px); }
 .link-btn { margin-top: 16px; background: none; border: 0; cursor: pointer; color: var(--brown); text-decoration: underline; text-underline-offset: 4px; font-weight: 700; padding: 8px; }
 
 .lightbox { border: 0; padding: 0; border-radius: 22px; max-width: min(440px, calc(100vw - 32px)); max-height: calc(100vh - 32px); background: #fff; box-shadow: var(--shadow); overflow: auto; }

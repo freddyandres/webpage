@@ -12,9 +12,15 @@
     facebook: "",
     url: "",
     formato: "horizontal",
-    revelado: ""
+    revelado: "",
+    whatsapp: ""
   };
   var POLL_MS = 30000;
+  var VOTES_POLL_MS = 15000;
+  // Base de datos de votos (Supabase). La llave es pública a propósito:
+  // solo permite votar y leer el conteo, no ver ni borrar los votos.
+  var VOTES_API = "__SUPABASE_URL__";
+  var VOTES_KEY = "__SUPABASE_KEY__";
   var PAGE_URL = location.origin + location.pathname;
   var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -83,6 +89,7 @@
       updatePlayer();
       updatePhase();
       checkReveal();
+      updatePhotoLinks();
     });
   }
 
@@ -365,16 +372,13 @@
     else { running = false; ctx.clearRect(0, 0, innerWidth, innerHeight); }
   }
 
-  /* ---------------- Sonido (todo sintetizado, sin archivos) ---------------- */
+  /* ---------------- Sonido (música del video + efectos sintetizados) ---------------- */
   var Sound = (function () {
     var ctx = null, master = null, noiseBuf = null;
-    var enabled = store.get("revelacion-sonido") === "1", live = false, paused = false;
-    var musicGain = null, musicTimer = null, nextNote = 0, mi = 0, beatT = 0;
-    var BEAT = 0.46;
-    // Canción de cuna original para cajita de música (nota MIDI, tiempos)
-    var MEL = [[72,1],[76,1],[79,1],[76,1], [77,1],[81,1],[79,2], [76,1],[79,1],[84,1],[83,1], [81,1],[79,1],[76,2],
-               [77,1],[76,1],[74,1],[76,1], [72,1],[74,1],[76,1],[79,1], [77,1],[76,1],[74,1],[71,1], [72,4]];
-    var BASS = [48, 53, 52, 53, 50, 48, 43, 48];
+    var enabled = store.get("revelacion-sonido") === "1", live = false, paused = false, videoOn = false;
+    // Música de fondo: el audio del video del anuncio, preparado para repetirse sin cortes
+    var MUSIC_URL = "assets/musica.m4a", MUSIC_VOL = 0.55;
+    var musicBuf = null, musicLoading = null, musicGain = null, musicSrc = null, wantMusic = false;
     var btn, hint;
 
     function N(m) { return 440 * Math.pow(2, (m - 69) / 12); }
@@ -467,35 +471,46 @@
     }
 
     /* Música de fondo */
-    function schedule() {
-      while (nextNote < ctx.currentTime + 0.35) {
-        var n = MEL[mi];
-        if (beatT % 4 === 0) bell(N(BASS[(beatT / 4) % 8]), nextNote, 0.05, 1.8, musicGain);
-        bell(N(n[0]), nextNote, 0.085, Math.min(2.4, n[1] * BEAT * 1.6), musicGain);
-        nextNote += n[1] * BEAT; beatT += n[1];
-        mi = (mi + 1) % MEL.length;
-        if (mi === 0) { beatT = 0; nextNote += BEAT * 2; }
-      }
+    function loadMusic() {
+      if (musicBuf || musicLoading) return musicLoading;
+      musicLoading = fetch(MUSIC_URL)
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+        .then(function (data) {
+          return new Promise(function (ok, fail) { ctx.decodeAudioData(data, ok, fail); });
+        })
+        .then(function (buf) { musicBuf = buf; })
+        .catch(function () { musicLoading = null; });
+      return musicLoading;
     }
+    function canPlayMusic() { return enabled && !live && !paused && !videoOn && !document.hidden; }
     function startMusic() {
-      if (!ready() || live || paused || musicTimer || document.hidden) return;
+      if (!canPlayMusic() || musicSrc || !ensure()) return;
+      wantMusic = true;
+      if (!musicBuf) {
+        var p = loadMusic();
+        if (p) p.then(function () { if (wantMusic && musicBuf) startMusic(); });
+        return;
+      }
       var now = ctx.currentTime;
       musicGain = ctx.createGain();
       musicGain.gain.setValueAtTime(0.0001, now);
-      musicGain.gain.exponentialRampToValueAtTime(1, now + 1.5);
+      musicGain.gain.exponentialRampToValueAtTime(MUSIC_VOL, now + 1.2);
       musicGain.connect(master);
-      mi = 0; beatT = 0; nextNote = now + 0.15;
-      musicTimer = setInterval(schedule, 100);
-      schedule();
+      musicSrc = ctx.createBufferSource();
+      musicSrc.buffer = musicBuf;
+      musicSrc.loop = true;
+      musicSrc.connect(musicGain);
+      musicSrc.start(now + 0.05);
     }
     function stopMusic() {
-      if (!musicTimer) return;
-      clearInterval(musicTimer); musicTimer = null;
-      var g = musicGain, now = ctx.currentTime;
+      wantMusic = false;
+      if (!musicSrc) return;
+      var src = musicSrc, g = musicGain, now = ctx.currentTime;
+      musicSrc = null; musicGain = null;
       g.gain.cancelScheduledValues(now);
       g.gain.setValueAtTime(Math.max(g.gain.value, 0.0001), now);
       g.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
-      setTimeout(function () { g.disconnect(); }, 900);
+      setTimeout(function () { try { src.stop(); } catch (e) { /* ya paró */ } g.disconnect(); }, 800);
     }
 
     function render() {
@@ -535,8 +550,9 @@
     }
     function setLive(v) { live = v; if (v) stopMusic(); else startMusic(); }
     function pause(v) { paused = v; if (v) stopMusic(); else startMusic(); }
+    function video(v) { videoOn = v; if (v) stopMusic(); else startMusic(); }
 
-    return { init: init, pop: pop, chime: chime, drumroll: drumroll, fanfare: fanfare, setLive: setLive, pause: pause };
+    return { init: init, pop: pop, chime: chime, drumroll: drumroll, fanfare: fanfare, setLive: setLive, pause: pause, video: video };
   })();
 
   /* ---------------- Globos que suben (se pueden reventar) ---------------- */
@@ -598,20 +614,99 @@
     if (revealed && team) {
       msg.textContent = team === revealed ? "¡Acertaste! Eres del team ganador 🏆🎉" : "¡Casi! Pero lo vamos a amar igualito 💕";
     } else if (team === "nino") {
-      msg.textContent = "¡Eres Team Niño! 💙 No olvides tu prenda azul.";
+      msg.textContent = "¡Eres Team Niño! 💙 Ponte tu camiseta azul y envíanos la foto 📸";
     } else if (team === "nina") {
-      msg.textContent = "¡Eres Team Niña! 💗 No olvides tu prenda rosada.";
+      msg.textContent = "¡Eres Team Niña! 💗 Ponte tu camiseta rosada y envíanos la foto 📸";
     } else {
       msg.textContent = "";
     }
   }
+  /* ---------------- Votos compartidos ---------------- */
+  var Votes = (function () {
+    var counts = null, busy = false;
+    function enabledApi() { return !/^__/.test(VOTES_API); }
+    function voterId() {
+      var id = store.get("revelacion-id");
+      if (!id) {
+        id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+          : "xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx".replace(/x/g, function () { return ((Math.random() * 16) | 0).toString(16); });
+        store.set("revelacion-id", id);
+      }
+      return id;
+    }
+    function rpc(name, body) {
+      return fetch(VOTES_API + "/rest/v1/rpc/" + name, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: VOTES_KEY, Authorization: "Bearer " + VOTES_KEY },
+        body: JSON.stringify(body || {})
+      }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+    }
+    function setNum(el, v, old) {
+      el.textContent = v;
+      if (old != null && old !== v) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+    }
+    function show(c) {
+      if (!c) return;
+      var n = Number(c.nino) || 0, g = Number(c.nina) || 0, tot = n + g;
+      var prev = counts;
+      counts = { nino: n, nina: g };
+      $("#scoreboard").hidden = false;
+      setNum($("#sbNino"), n, prev && prev.nino);
+      setNum($("#sbNina"), g, prev && prev.nina);
+      $("#sbTotal").textContent = tot === 1 ? "1 voto" : tot + " votos";
+      var pn = tot ? Math.round(n * 100 / tot) : 50, pg = tot ? 100 - pn : 50;
+      $("#sbFillNino").style.flexGrow = tot ? Math.max(n, tot * 0.06) : 1;
+      $("#sbFillNina").style.flexGrow = tot ? Math.max(g, tot * 0.06) : 1;
+      $("#sbPctNino").textContent = pn + "%";
+      $("#sbPctNina").textContent = pg + "%";
+      $("#sbBar").setAttribute("aria-label", "Team Niño " + n + " votos, Team Niña " + g + " votos");
+      var r = normTeam(cfg.revelado);
+      $("#sbNote").textContent = r
+        ? "Resultado final de la votación · " + (r === "nina" ? pg : pn) + "% acertó 🎉"
+        : "Marcador en vivo · se actualiza solo";
+    }
+    function load() {
+      if (!enabledApi() || busy || document.hidden) return;
+      busy = true;
+      rpc("revelacion_conteo").then(show).catch(function () { /* sin conexión: se reintenta */ }).then(function () { busy = false; });
+    }
+    function vote(t) {
+      if (!enabledApi()) return;
+      var before = store.get("revelacion-votado");
+      if (counts && before !== t) {
+        // respuesta inmediata en pantalla mientras se guarda
+        var c = { nino: counts.nino, nina: counts.nina };
+        c[t]++;
+        if (before === "nino" || before === "nina") c[before] = Math.max(0, c[before] - 1);
+        show(c);
+      }
+      rpc("revelacion_votar", { p_votante: voterId(), p_equipo: t })
+        .then(function (c) { store.set("revelacion-votado", t); show(c); })
+        .catch(function () { load(); });
+    }
+    function init() {
+      if (!enabledApi()) return;
+      load();
+      setInterval(load, VOTES_POLL_MS);
+      document.addEventListener("visibilitychange", function () { if (!document.hidden) load(); });
+      // Si eligió equipo antes de que existiera el marcador, se envía su voto guardado
+      var t = store.get("revelacion-team");
+      if ((t === "nino" || t === "nina") && store.get("revelacion-votado") !== t && !normTeam(cfg.revelado)) vote(t);
+    }
+    return { init: init, vote: vote, refresh: function () { if (counts) show(counts); } };
+  })();
+
   function initTeams() {
     team = store.get("revelacion-team") || "";
     renderTeam();
     $$(".team-btn").forEach(function (b) {
       b.addEventListener("click", function () {
         var t = b.getAttribute("data-team");
-        team = t; store.set("revelacion-team", t);
+        if (!normTeam(cfg.revelado)) {
+          // después de la revelación ya no se cambian los votos
+          team = t; store.set("revelacion-team", t);
+          Votes.vote(t);
+        }
         renderTeam();
         var r = b.getBoundingClientRect();
         burst(r.left + r.width / 2, r.top + r.height / 3, COLORS[t], 40, { power: 8, hearts: 0.5 });
@@ -643,6 +738,7 @@
     $(".eyebrow").textContent = "¡Ya lo sabemos!";
     document.querySelector('meta[name="theme-color"]').setAttribute("content", t === "nina" ? "#fbd3e1" : "#cfe7f8");
     renderTeam();
+    Votes.refresh();
     requestAnimationFrame(buildGarland);
   }
   function checkReveal() {
@@ -720,16 +816,17 @@
     var url = "https://calendar.google.com/calendar/render?action=TEMPLATE" +
       "&text=" + encodeURIComponent("Revelación de género 🧸 ¿Niño o Niña?") +
       "&dates=" + toG(startMs()) + "/" + toG(endMs()) +
-      "&details=" + encodeURIComponent("Si eres Team Niño ven con una prenda azul 💙 · Si eres Team Niña ven con una prenda rosada 💗\nEn vivo: " + PAGE_URL) +
-      "&location=" + encodeURIComponent("Unidad Recreativa Rincón de Pacará, Av. 2G #58-100, B/ Los Álamos, Cali");
+      "&details=" + encodeURIComponent("Transmisión en vivo 🎥\nSi eres Team Niño ponte una camiseta azul 💙 · Si eres Team Niña una rosada 💗 ¡y envíanos tu foto! 📸\nEn vivo: " + PAGE_URL) +
+      "&location=" + encodeURIComponent(PAGE_URL);
     $("#calLink").href = url;
   }
-  function initInvite() {
-    var dlg = $("#inviteDialog");
-    $("#openInvite").addEventListener("click", function () {
-      if (dlg.showModal) dlg.showModal(); else window.open("assets/invitacion.jpg", "_blank");
-    });
-    dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+  function updatePhotoLinks() {
+    // Si config.json trae un número de WhatsApp, la foto llega directo a ese chat;
+    // si no, WhatsApp deja escoger a quién enviarla.
+    var num = String(cfg.whatsapp || "").replace(/\D/g, "");
+    var base = "https://wa.me/" + num + "?text=";
+    $("#photoNino").href = base + encodeURIComponent("¡Soy Team Niño! 💙 Aquí va mi foto con la camiseta azul 📸");
+    $("#photoNina").href = base + encodeURIComponent("¡Soy Team Niña! 💗 Aquí va mi foto con la camiseta rosada 📸");
   }
 
   /* ---------------- Aparición al hacer scroll ---------------- */
@@ -753,7 +850,7 @@
     initTeams();
     initShare();
     initCalendar();
-    initInvite();
+    updatePhotoLinks();
     initScrollReveal();
     applyOverrides();
     updatePlayer();
@@ -761,6 +858,10 @@
     setInterval(tick, 1000);
     startBalloons();
     Sound.init();
+    var sv = $("#storyVideo");
+    sv.addEventListener("play", function () { Sound.video(true); });
+    sv.addEventListener("pause", function () { Sound.video(false); });
+    sv.addEventListener("ended", function () { Sound.video(false); });
 
     $("#revealClose").addEventListener("click", closeReveal);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("#revealOverlay").hidden) closeReveal(); });
@@ -773,6 +874,7 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(buildGarland);
 
     refresh().then(function () {
+      Votes.init();
       // Bienvenida: un poquito de confeti al abrir
       if (!normTeam(cfg.revelado)) setTimeout(function () { burst(innerWidth / 2, innerHeight * 0.35, COLORS.mix, 60, { power: 10, hearts: 0.3 }); }, 700);
     });
