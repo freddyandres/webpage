@@ -192,6 +192,19 @@
           </button>
         </div>
         <p class="team-msg" id="teamMsg" aria-live="polite"></p>
+
+        <div class="scoreboard" id="scoreboard" hidden>
+          <div class="sb-row">
+            <span class="sb-side nino"><svg><use href="#heart"/></svg><b id="sbNino">0</b> <small>Niño</small></span>
+            <span class="sb-total" id="sbTotal">0 votos</span>
+            <span class="sb-side nina"><small>Niña</small> <b id="sbNina">0</b><svg><use href="#heart"/></svg></span>
+          </div>
+          <div class="sb-bar" role="img" id="sbBar" aria-label="Votos">
+            <span class="sb-fill nino" id="sbFillNino"><i id="sbPctNino">50%</i></span>
+            <span class="sb-fill nina" id="sbFillNina"><i id="sbPctNina">50%</i></span>
+          </div>
+          <p class="sb-note" id="sbNote">Marcador en vivo · se actualiza solo</p>
+        </div>
       </div>
     </section>
 
