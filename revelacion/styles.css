@@ -139,6 +139,30 @@ body.revealed-nino .b2, body.revealed-nino .b3 { background: radial-gradient(clo
 }
 .brand { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-family: var(--f-head); font-weight: 600; color: var(--brown-deep); }
 .brand-bear { width: 30px; height: 29px; }
+.top-actions { position: relative; display: flex; align-items: center; gap: 8px; }
+.sound-btn {
+  width: 40px; height: 40px; flex: none; border-radius: 50%; border: 0; cursor: pointer;
+  display: grid; place-items: center; background: #fff; color: var(--brown); box-shadow: var(--shadow-soft);
+  transition: background .3s ease, color .3s ease, transform .2s ease;
+}
+.sound-btn:active { transform: scale(.92); }
+.sound-btn:focus-visible { outline: 3px solid var(--blue-deep); outline-offset: 2px; }
+.sound-btn .waves { display: none; }
+.sound-btn.on { background: linear-gradient(135deg, var(--blue-deep), var(--pink-deep)); color: #fff; }
+.sound-btn.on .waves { display: block; }
+.sound-btn.on .mute { display: none; }
+.sound-btn:not(.on) { animation: nudge 2.6s ease-in-out infinite; }
+@keyframes nudge { 0%, 78%, 100% { transform: none; } 84% { transform: rotate(-14deg) scale(1.08); } 90% { transform: rotate(12deg) scale(1.08); } 95% { transform: rotate(-6deg); } }
+.sound-hint {
+  position: absolute; top: calc(100% + 12px); right: 0; z-index: 50;
+  white-space: nowrap; padding: 8px 13px; border-radius: 14px;
+  background: var(--brown-deep); color: #fff; font-family: var(--f-head); font-weight: 600; font-size: .88rem;
+  box-shadow: var(--shadow-soft);
+  opacity: 0; transform: translateY(-6px); transition: opacity .4s ease, transform .4s ease; pointer-events: none;
+}
+.sound-hint::before { content: ""; position: absolute; top: -6px; right: 14px; border: 6px solid transparent; border-top: 0; border-bottom-color: var(--brown-deep); }
+.sound-hint.show { opacity: 1; transform: none; }
+@media (max-width: 389px) { .brand span { display: none; } }
 .status-pill {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 6px 12px 6px 10px; border-radius: 999px;

@@ -98,7 +98,17 @@
 
   <header class="topbar">
     <a class="brand" href="#inicio"><svg class="brand-bear"><use href="#bear"/></svg><span>Nuestro bebé</span></a>
-    <span class="status-pill" id="statusPill" data-state="pronto"><i></i><span id="statusText">Próximamente</span></span>
+    <div class="top-actions">
+      <span class="status-pill" id="statusPill" data-state="pronto"><i></i><span id="statusText">Próximamente</span></span>
+      <button class="sound-btn" id="soundBtn" type="button" aria-pressed="false" aria-label="Activar sonido" title="Activar sonido">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M3.5 9.5h3.8L12 5.6v12.8l-4.7-3.9H3.5z" fill="currentColor"/>
+          <path class="waves" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path class="mute" d="M15.5 9.5l5 5M20.5 9.5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <span class="sound-hint" id="soundHint" aria-hidden="true">Activa el sonido 🎶</span>
+    </div>
   </header>
 
   <div class="reveal-ribbon" id="revealRibbon" hidden></div>
@@ -296,7 +306,7 @@
       <svg><use href="#bear"/></svg>
     </div>
     <p>Hecho con todo nuestro amor 💕</p>
-    <p class="footer-small">Toca los globos que flotan para reventarlos 🎈</p>
+    <p class="footer-small">Activa el sonido 🔊 y toca los globos que flotan para reventarlos 🎈</p>
   </footer>
 
   <!-- Invitación original -->
