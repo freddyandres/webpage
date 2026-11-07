@@ -12,7 +12,8 @@
     facebook: "",
     url: "",
     formato: "horizontal",
-    revelado: ""
+    revelado: "",
+    whatsapp: ""
   };
   var POLL_MS = 30000;
   var VOTES_POLL_MS = 15000;
@@ -88,6 +89,7 @@
       updatePlayer();
       updatePhase();
       checkReveal();
+      updatePhotoLinks();
     });
   }
 
@@ -612,9 +614,9 @@
     if (revealed && team) {
       msg.textContent = team === revealed ? "¡Acertaste! Eres del team ganador 🏆🎉" : "¡Casi! Pero lo vamos a amar igualito 💕";
     } else if (team === "nino") {
-      msg.textContent = "¡Eres Team Niño! 💙 No olvides tu prenda azul.";
+      msg.textContent = "¡Eres Team Niño! 💙 Ponte tu camiseta azul y envíanos la foto 📸";
     } else if (team === "nina") {
-      msg.textContent = "¡Eres Team Niña! 💗 No olvides tu prenda rosada.";
+      msg.textContent = "¡Eres Team Niña! 💗 Ponte tu camiseta rosada y envíanos la foto 📸";
     } else {
       msg.textContent = "";
     }
@@ -814,16 +816,17 @@
     var url = "https://calendar.google.com/calendar/render?action=TEMPLATE" +
       "&text=" + encodeURIComponent("Revelación de género 🧸 ¿Niño o Niña?") +
       "&dates=" + toG(startMs()) + "/" + toG(endMs()) +
-      "&details=" + encodeURIComponent("Si eres Team Niño ven con una prenda azul 💙 · Si eres Team Niña ven con una prenda rosada 💗\nEn vivo: " + PAGE_URL) +
-      "&location=" + encodeURIComponent("Unidad Recreativa Rincón de Pacará, Av. 2G #58-100, B/ Los Álamos, Cali");
+      "&details=" + encodeURIComponent("Transmisión en vivo 🎥\nSi eres Team Niño ponte una camiseta azul 💙 · Si eres Team Niña una rosada 💗 ¡y envíanos tu foto! 📸\nEn vivo: " + PAGE_URL) +
+      "&location=" + encodeURIComponent(PAGE_URL);
     $("#calLink").href = url;
   }
-  function initInvite() {
-    var dlg = $("#inviteDialog");
-    $("#openInvite").addEventListener("click", function () {
-      if (dlg.showModal) dlg.showModal(); else window.open("assets/invitacion.jpg", "_blank");
-    });
-    dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+  function updatePhotoLinks() {
+    // Si config.json trae un número de WhatsApp, la foto llega directo a ese chat;
+    // si no, WhatsApp deja escoger a quién enviarla.
+    var num = String(cfg.whatsapp || "").replace(/\D/g, "");
+    var base = "https://wa.me/" + num + "?text=";
+    $("#photoNino").href = base + encodeURIComponent("¡Soy Team Niño! 💙 Aquí va mi foto con la camiseta azul 📸");
+    $("#photoNina").href = base + encodeURIComponent("¡Soy Team Niña! 💗 Aquí va mi foto con la camiseta rosada 📸");
   }
 
   /* ---------------- Aparición al hacer scroll ---------------- */
@@ -847,7 +850,7 @@
     initTeams();
     initShare();
     initCalendar();
-    initInvite();
+    updatePhotoLinks();
     initScrollReveal();
     applyOverrides();
     updatePlayer();
