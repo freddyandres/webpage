@@ -23,8 +23,8 @@
   var VOTES_POLL_MS = 15000;
   // Base de datos de votos (Supabase). La llave es pública a propósito:
   // solo permite votar y leer el conteo, no ver ni borrar los votos.
-  var VOTES_API = "__SUPABASE_URL__";
-  var VOTES_KEY = "__SUPABASE_KEY__";
+  var VOTES_API = "https://jbhtiakcfergqltnvgtx.supabase.co";
+  var VOTES_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpiaHRpYWtjZmVyZ3FsdG52Z3R4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM4ODkwMTYsImV4cCI6MjEwOTQ2NTAxNn0.7osLkacK7pxGUMeGyS9sLHTo9VrcbCROyM-Ai8iA7FQ";
   var PAGE_URL = location.origin + location.pathname;
   var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
