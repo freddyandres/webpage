@@ -6,14 +6,18 @@
   "use strict";
 
   var DEFAULTS = {
-    inicio: "2026-11-08T15:00:00-05:00",
-    duracionHoras: 3,
+    inicio: "2026-11-08T15:30:00-05:00",
+    duracionHoras: 2.5,
     youtube: "",
     facebook: "",
     url: "",
     formato: "horizontal",
     revelado: "",
-    whatsapp: ""
+    whatsapp: "",
+    meet: "",
+    meetTelefono: "",
+    meetPin: "",
+    meetMasNumeros: ""
   };
   var POLL_MS = 30000;
   var VOTES_POLL_MS = 15000;
@@ -90,6 +94,7 @@
       updatePhase();
       checkReveal();
       updatePhotoLinks();
+      initCalendar();
     });
   }
 
@@ -124,9 +129,36 @@
     if (cfg.url && /^https:\/\//.test(cfg.url)) return { src: cfg.url, open: cfg.url };
     return null;
   }
+  // Google Meet no se puede mostrar dentro de una página: se ofrece un botón para entrar
+  function meetUrl() {
+    var u = String(cfg.meet || "").trim();
+    return /^https:\/\/meet\.google\.com\//.test(u) ? u : "";
+  }
+  function updateMeet() {
+    var url = meetUrl(), box = $("#phMeet");
+    box.hidden = !url || !!getEmbed();
+    $("#playerFrame").classList.toggle("meet-mode", !box.hidden);
+    if (!url) return;
+    $("#meetLink").href = url;
+    var tel = String(cfg.meetTelefono || ""), pin = String(cfg.meetPin || "");
+    var dial = $(".ph-dial");
+    dial.hidden = !tel;
+    if (tel) {
+      $("#meetTel").textContent = "(CO) " + tel;
+      // marca el número y luego el PIN automáticamente
+      $("#meetTel").href = "tel:" + tel.replace(/[^\d+]/g, "") + (pin ? ",," + pin.replace(/[^\d]/g, "") + "%23" : "");
+      $("#meetPin").textContent = pin;
+    }
+    var more = $("#meetMore");
+    more.hidden = !/^https:\/\//.test(cfg.meetMasNumeros || "");
+    if (!more.hidden) more.href = cfg.meetMasNumeros;
+  }
+  function hasLive() { return !!getEmbed() || !!meetUrl(); }
+
   function updatePlayer() {
     var frame = $("#playerFrame");
     frame.classList.toggle("vertical", String(cfg.formato).toLowerCase() === "vertical");
+    updateMeet();
 
     var e = getEmbed();
     var key = e ? e.src : "";
@@ -180,14 +212,15 @@
   var lastPhase = "";
   function updatePhase() {
     var now = Date.now(), st = startMs(), en = endMs();
-    var hasStream = !!getEmbed();
+    var hasStream = hasLive();
+    var isMeet = !getEmbed() && !!meetUrl();
     var revealed = normTeam(cfg.revelado);
     var phase;
     if (now >= en) phase = "fin";
     else if (now >= st - 30 * 60000) phase = hasStream ? "vivo" : "casi";
     else phase = "pronto";
 
-    var key = phase + "|" + hasStream + "|" + revealed;
+    var key = phase + "|" + hasStream + "|" + isMeet + "|" + revealed;
     if (key === lastPhase) return;
     lastPhase = key;
     Sound.setLive(phase === "vivo");
@@ -205,11 +238,24 @@
     }
 
     var lead = $("#liveLead");
-    if (phase === "vivo") lead.textContent = "¡Estamos en vivo! Sube el volumen 🔊 y celebra con nosotros.";
+    if (phase === "vivo") lead.textContent = isMeet
+      ? "¡Estamos en vivo por Google Meet! Toca el botón verde para entrar 🎉"
+      : "¡Estamos en vivo! Sube el volumen 🔊 y celebra con nosotros.";
     else if (phase === "fin") lead.textContent = "Gracias por acompañarnos en este momento tan especial.";
     else lead.textContent = "Desde donde estés, acompáñanos en este momento tan especial.";
 
-    if (!hasStream) {
+    if (isMeet) {
+      if (phase === "vivo") {
+        $("#phTitle").textContent = "¡Estamos en vivo! Entra ya 🎉";
+        $("#phSub").textContent = "Toca el botón para unirte a la videollamada";
+      } else if (phase === "fin") {
+        $("#phTitle").textContent = "¡Gracias por acompañarnos!";
+        $("#phSub").textContent = "Pronto compartiremos el video de este día.";
+      } else {
+        $("#phTitle").textContent = "Únete por Google Meet 🎥";
+        $("#phSub").textContent = "Domingo 8 de noviembre · 3:30 a 6:00 p.m.";
+      }
+    } else if (!hasStream) {
       if (phase === "casi") {
         $("#phTitle").textContent = "¡Ya casi! Estamos preparando la cámara 🎥";
         $("#phSub").textContent = "La transmisión aparecerá aquí sola, no cierres la página.";
@@ -218,7 +264,7 @@
         $("#phSub").textContent = "Pronto compartiremos el video de este día.";
       } else {
         $("#phTitle").textContent = "La transmisión aparecerá aquí";
-        $("#phSub").textContent = "Domingo 8 de noviembre · 3:00 p.m.";
+        $("#phSub").textContent = "Domingo 8 de noviembre · 3:30 p.m.";
       }
     }
   }
@@ -786,7 +832,7 @@
 
   /* ---------------- Compartir, calendario, invitación ---------------- */
   function initShare() {
-    var msg = "🧸💙💗 ¡Acompáñanos EN VIVO a descubrir si nuestro bebé es niño o niña!\n📅 Domingo 8 de noviembre · 3:00 p.m.\n👉 " + PAGE_URL;
+    var msg = "🧸💙💗 ¡Acompáñanos EN VIVO a descubrir si el Bebé Castillo Cano es niño o niña!\n📅 Domingo 8 de noviembre · 3:30 p.m. (hora Colombia)\n👉 " + PAGE_URL;
     $("#waLink").href = "https://wa.me/?text=" + encodeURIComponent(msg);
 
     var copyBtn = $("#copyLink");
@@ -807,16 +853,16 @@
       var ns = $("#nativeShare");
       ns.hidden = false;
       ns.addEventListener("click", function () {
-        navigator.share({ title: "¿Niño o Niña? · Revelación en vivo", text: "¡Acompáñanos en vivo! Domingo 8 de noviembre · 3:00 p.m.", url: PAGE_URL }).catch(function () { /* cancelado */ });
+        navigator.share({ title: "¿Niño o Niña? · Revelación en vivo", text: "¡Acompáñanos en vivo! Domingo 8 de noviembre · 3:30 p.m.", url: PAGE_URL }).catch(function () { /* cancelado */ });
       });
     }
   }
   function initCalendar() {
     var toG = function (ms) { return new Date(ms).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, ""); };
     var url = "https://calendar.google.com/calendar/render?action=TEMPLATE" +
-      "&text=" + encodeURIComponent("Revelación de género 🧸 ¿Niño o Niña?") +
+      "&text=" + encodeURIComponent("Revelación Bebé Castillo Cano 🧸 ¿Niño o Niña?") +
       "&dates=" + toG(startMs()) + "/" + toG(endMs()) +
-      "&details=" + encodeURIComponent("Transmisión en vivo 🎥\nSi eres Team Niño ponte una camiseta azul 💙 · Si eres Team Niña una rosada 💗 ¡y envíanos tu foto! 📸\nEn vivo: " + PAGE_URL) +
+      "&details=" + encodeURIComponent((meetUrl() ? "Únete por Google Meet: " + meetUrl() + "\n" : "") + "Transmisión en vivo 🎥\nSi eres Team Niño ponte una camiseta azul 💙 · Si eres Team Niña una rosada 💗 ¡y envíanos tu foto! 📸\nEn vivo: " + PAGE_URL) +
       "&location=" + encodeURIComponent(PAGE_URL);
     $("#calLink").href = url;
   }

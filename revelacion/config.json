@@ -1,11 +1,15 @@
 {
-  "_ayuda": "1) Pega el link del en vivo en 'youtube' (o en 'facebook', o cualquier otro en 'url'). 2) Si transmites con el celular en vertical, pon 'formato' en 'vertical'. 3) Cuando se haga la revelación escribe \"niño\" o \"niña\" en 'revelado'. 4) En 'whatsapp' pon el número (con 57 adelante, ej. 573001234567) al que deben llegar las fotos de Team Niño/Niña; si lo dejas vacío, cada persona escoge a quién enviarla. La página revisa este archivo cada 30 segundos, así que quienes la tengan abierta verán los cambios sin recargar.",
-  "inicio": "2026-11-08T15:00:00-05:00",
-  "duracionHoras": 3,
+  "_ayuda": "1) La videollamada de Google Meet está en 'meet' (con su teléfono y PIN). Si además transmites por YouTube o Facebook, pega ese link en 'youtube' o 'facebook' y se verá dentro de la página. 2) Si transmites con el celular en vertical, pon 'formato' en 'vertical'. 3) Cuando se haga la revelación escribe \"niño\" o \"niña\" en 'revelado'. 4) En 'whatsapp' pon el número (con 57 adelante, ej. 573001234567) al que deben llegar las fotos de Team Niño/Niña; si lo dejas vacío, cada persona escoge a quién enviarla. La página revisa este archivo cada 30 segundos, así que quienes la tengan abierta verán los cambios sin recargar.",
+  "inicio": "2026-11-08T15:30:00-05:00",
+  "duracionHoras": 2.5,
   "youtube": "",
   "facebook": "",
   "url": "",
   "formato": "horizontal",
   "revelado": "",
-  "whatsapp": "573226628855"
+  "whatsapp": "573226628855",
+  "meet": "https://meet.google.com/dmu-ajpj-tbn",
+  "meetTelefono": "+57 601 8956250",
+  "meetPin": "306 212 628 0320#",
+  "meetMasNumeros": "https://tel.meet/dmu-ajpj-tbn?pin=3062126280320"
 }
