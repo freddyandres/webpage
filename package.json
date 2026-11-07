@@ -1,0 +1,23 @@
+{
+  "name": "unidos-por-una-patita",
+  "version": "1.0.0",
+  "description": "Página web y panel administrativo de Unidos por una Patita — «Unidos por amor, movidos por la esperanza».",
+  "private": true,
+  "main": "server/index.js",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "admin:create": "node scripts/create-admin.js",
+    "test": "node --test test/*.test.js"
+  },
+  "license": "GPL-3.0",
+  "dependencies": {
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.15"
+  }
+}

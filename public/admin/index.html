@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Panel administrativo · Unidos por una Patita</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+  <script src="/admin/admin.js" defer></script>
+</head>
+<body class="admin">
+  <svg class="sprite" width="0" height="0" aria-hidden="true">
+    <symbol id="i-paw" viewBox="0 0 64 64"><ellipse cx="32" cy="42" rx="14" ry="12"/><ellipse cx="14" cy="27" rx="6" ry="8" transform="rotate(-20 14 27)"/><ellipse cx="25" cy="15" rx="6" ry="8.5" transform="rotate(-6 25 15)"/><ellipse cx="39" cy="15" rx="6" ry="8.5" transform="rotate(6 39 15)"/><ellipse cx="50" cy="27" rx="6" ry="8" transform="rotate(20 50 27)"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-whatsapp" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.8l5.1-1.3A9.7 9.7 0 1 0 12 2.2zm0 17.7c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3a8 8 0 1 1 6.9 3.8zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 5 5 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2c.2-.6.2-1 .1-1.2l-.6-.6z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4v3.5h3.5M4 13a8 8 0 0 0 14.6 4.5M20 20v-3.5h-3.5"/></symbol>
+  </svg>
+
+  <!-- ============ INICIO DE SESIÓN ============ -->
+  <main class="login-view" id="login-view" hidden>
+    <div class="login-card">
+      <div class="brand">
+        <span class="brand-mark"><svg><use href="#i-paw"/></svg></span>
+        <span class="brand-text">Unidos por<br><strong>una Patita</strong></span>
+      </div>
+      <h1>Panel administrativo</h1>
+      <p class="muted small">Acceso exclusivo para los organizadores autorizados.</p>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="username">Usuario</label>
+          <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+        </div>
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <div class="pwd-wrap">
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+            <button type="button" class="pwd-toggle" aria-label="Mostrar contraseña">Ver</button>
+          </div>
+        </div>
+        <p class="form-alert" id="login-error" role="alert" hidden></p>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Iniciar sesión</button>
+      </form>
+      <a class="small back-link" href="/">← Volver a la página pública</a>
+    </div>
+  </main>
+
+  <!-- ============ PANEL ============ -->
+  <div class="app-view" id="app-view" hidden>
+    <header class="admin-top">
+      <div class="admin-top-inner">
+        <a class="brand" href="/admin/">
+          <span class="brand-mark"><svg><use href="#i-paw"/></svg></span>
+          <span class="brand-text">Unidos por<br><strong>una Patita</strong></span>
+        </a>
+        <nav class="admin-tabs" role="tablist" aria-label="Secciones del panel">
+          <button role="tab" class="tab is-active" data-tab="inscripciones" aria-selected="true">Inscripciones</button>
+          <button role="tab" class="tab" data-tab="configuracion" aria-selected="false">Configuración</button>
+          <button role="tab" class="tab" data-tab="cuenta" aria-selected="false">Mi cuenta</button>
+        </nav>
+        <div class="admin-user">
+          <span class="who"><span class="avatar sm" id="me-initial">·</span><span><strong id="me-name"></strong><small id="me-role"></small></span></span>
+          <button class="btn btn-ghost btn-sm" id="btn-logout" title="Cerrar sesión"><svg class="ico"><use href="#i-logout"/></svg><span class="hide-sm">Salir</span></button>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <!-- ---------- Inscripciones ---------- -->
+      <section data-panel="inscripciones">
+        <div class="panel-head">
+          <div>
+            <h1>Inscripciones</h1>
+            <p class="muted small" id="last-sync"></p>
+          </div>
+          <div class="head-actions">
+            <button class="btn btn-ghost btn-sm" id="btn-refresh"><svg class="ico"><use href="#i-refresh"/></svg> Actualizar</button>
+            <a class="btn btn-soft btn-sm" href="/api/admin/export.xlsx" download><svg class="ico"><use href="#i-download"/></svg> Excel</a>
+            <a class="btn btn-soft btn-sm" href="/api/admin/export.csv" download><svg class="ico"><use href="#i-download"/></svg> CSV</a>
+          </div>
+        </div>
+
+        <div class="stats" id="stats">
+          <div class="stat"><span class="stat-label">Total inscritos</span><strong data-stat="total">0</strong></div>
+          <div class="stat s-pend"><span class="stat-label">Pendientes</span><strong data-stat="pending">0</strong></div>
+          <div class="stat s-ok"><span class="stat-label">Aprobadas</span><strong data-stat="approved">0</strong></div>
+          <div class="stat s-no"><span class="stat-label">Rechazadas</span><strong data-stat="rejected">0</strong></div>
+          <div class="stat"><span class="stat-label">Puestos disponibles</span><strong data-stat="available">—</strong><small data-stat="available-note"></small></div>
+          <div class="stat s-money"><span class="stat-label">Total recaudado</span><strong data-stat="collected">$0</strong><small data-stat="collected-note"></small></div>
+        </div>
+
+        <div class="toolbar">
+          <label class="search">
+            <svg class="ico"><use href="#i-search"/></svg>
+            <input type="search" id="f-q" placeholder="Buscar por nombre, emprendimiento o número (UPP-001)" aria-label="Buscar">
+          </label>
+          <select id="f-category" aria-label="Filtrar por categoría"><option value="">Todas las categorías</option></select>
+          <select id="f-status" aria-label="Filtrar por estado"><option value="">Todos los estados</option></select>
+        </div>
+
+        <div class="table-card">
+          <table class="reg-table">
+            <thead>
+              <tr><th>Número</th><th>Emprendimiento</th><th>Categoría</th><th>Contacto</th><th>Fecha</th><th>Estado</th><th>Pago</th><th><span class="sr-only">Acciones</span></th></tr>
+            </thead>
+            <tbody id="reg-body"></tbody>
+          </table>
+          <div class="empty" id="empty" hidden>
+            <img src="/img/perrito.svg" alt="" width="90" height="90">
+            <p id="empty-text">Aún no hay inscripciones.</p>
+          </div>
+        </div>
+        <p class="muted small result-count" id="result-count"></p>
+      </section>
+
+      <!-- ---------- Configuración ---------- -->
+      <section data-panel="configuracion" hidden>
+        <div class="panel-head"><div><h1>Configuración</h1><p class="muted small">Espacios preparados para completar cuando tengas la información.</p></div></div>
+        <div class="settings-grid">
+          <form class="admin-card" id="settings-form" novalidate>
+            <h2>Información del evento</h2>
+            <div class="field">
+              <label for="s-maxStalls">Límite de puestos <span class="opt">(vacío = sin límite)</span></label>
+              <input id="s-maxStalls" name="maxStalls" type="number" min="1" max="9999" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label for="s-eventAddress">Dirección exacta del evento <span class="opt">(se mostrará en la página)</span></label>
+              <input id="s-eventAddress" name="eventAddress" type="text" maxlength="200" placeholder="Barrio Brisas de los Álamos — dirección">
+            </div>
+            <div class="field">
+              <label for="s-instagramUrl">Enlace de Instagram</label>
+              <input id="s-instagramUrl" name="instagramUrl" type="text" placeholder="https://www.instagram.com/usuario">
+            </div>
+            <div class="field">
+              <label for="s-lunaStory">Historia de Luna</label>
+              <textarea id="s-lunaStory" name="lunaStory" rows="6" maxlength="3000" placeholder="Escribe aquí la historia de Luna…"></textarea>
+            </div>
+            <p class="form-alert" id="settings-error" hidden></p>
+            <button class="btn btn-primary write-only" type="submit">Guardar cambios</button>
+          </form>
+
+          <div class="admin-card">
+            <h2>Fotografía de Luna</h2>
+            <p class="muted small">Será la imagen principal de la portada y de la historia solidaria.</p>
+            <div class="luna-preview" id="luna-preview">
+              <img id="luna-img" alt="Fotografía de Luna" hidden>
+              <span id="luna-empty" class="muted small">Aún no se ha subido la fotografía.</span>
+            </div>
+            <div class="row-actions write-only">
+              <label class="btn btn-soft btn-sm" for="luna-file">Subir fotografía</label>
+              <input type="file" id="luna-file" accept="image/jpeg,image/png,image/webp" class="sr-only">
+              <button class="btn btn-ghost btn-sm" id="luna-remove" type="button" hidden>Quitar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Cuenta ---------- -->
+      <section data-panel="cuenta" hidden>
+        <div class="panel-head"><div><h1>Mi cuenta</h1></div></div>
+        <div class="settings-grid">
+          <form class="admin-card" id="password-form" novalidate>
+            <h2>Cambiar contraseña</h2>
+            <div class="field"><label for="p-current">Contraseña actual</label><input id="p-current" name="currentPassword" type="password" autocomplete="current-password"></div>
+            <div class="field"><label for="p-new">Nueva contraseña</label><input id="p-new" name="newPassword" type="password" autocomplete="new-password" minlength="10"><small class="muted">Mínimo 10 caracteres, con letras y números.</small></div>
+            <div class="field"><label for="p-new2">Repite la nueva contraseña</label><input id="p-new2" name="newPassword2" type="password" autocomplete="new-password"></div>
+            <p class="form-alert" id="password-error" hidden></p>
+            <button class="btn btn-primary" type="submit">Actualizar contraseña</button>
+          </form>
+          <div class="admin-card">
+            <h2>Administradores autorizados</h2>
+            <ul class="admin-list" id="admin-list"></ul>
+            <p class="muted small">Las cuentas se crean desde el servidor con <code>npm run admin:create</code>. Rol «admin»: gestión completa. Rol «lector»: solo consulta.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ============ DETALLE ============ -->
+  <dialog class="drawer" id="detail" aria-labelledby="d-title">
+    <div class="drawer-inner">
+      <header class="drawer-head">
+        <div>
+          <span class="code-chip" id="d-code"></span>
+          <h2 id="d-title"></h2>
+          <p class="muted small" id="d-sub"></p>
+        </div>
+        <button class="icon-btn" id="d-close" aria-label="Cerrar"><svg><use href="#i-close"/></svg></button>
+      </header>
+
+      <div class="drawer-body">
+        <div class="status-box write-aware">
+          <span class="label">Estado de la inscripción</span>
+          <div class="segmented" role="radiogroup" aria-label="Estado" id="d-status"></div>
+          <label class="switch"><input type="checkbox" id="d-paid"><span class="track"></span><span>Pago de $10.000 recibido</span></label>
+          <p class="form-alert" id="d-error" hidden></p>
+        </div>
+
+        <div class="contact-actions">
+          <a class="btn btn-whatsapp btn-sm" id="d-wa" target="_blank" rel="noopener"><svg class="ico"><use href="#i-whatsapp"/></svg> WhatsApp</a>
+          <a class="btn btn-ghost btn-sm" id="d-mail"><svg class="ico"><use href="#i-mail"/></svg> Correo</a>
+        </div>
+
+        <div id="d-sections"></div>
+
+        <div class="detail-section">
+          <h3>Fotografía de los productos</h3>
+          <div id="d-photo"></div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Notas internas</h3>
+          <textarea id="d-notes" rows="3" maxlength="2000" placeholder="Solo visibles para los administradores"></textarea>
+          <button class="btn btn-soft btn-sm write-only" id="d-save-notes" type="button">Guardar nota</button>
+        </div>
+
+        <div class="detail-section">
+          <h3>Historial</h3>
+          <ul class="history" id="d-history"></ul>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
