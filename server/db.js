@@ -1,131 +1,78 @@
 'use strict';
 /**
- * Base de datos SQLite (módulo integrado node:sqlite).
- * Todo queda guardado en DATA_DIR/patita.db y persiste aunque se cierre la página
- * o se reinicie el servidor.
+ * Acceso a la base de datos PostgreSQL.
+ * - En producción (Vercel) se conecta a Supabase usando DATABASE_URL.
+ * - Sin DATABASE_URL (desarrollo local o pruebas) usa PGlite, un PostgreSQL embebido
+ *   que guarda los datos en DATA_DIR/pgdata.
  */
 const fs = require('node:fs');
 const path = require('node:path');
-const { DatabaseSync } = require('node:sqlite');
-
 const config = require('./config');
 
-let db;
+let impl; // { query(text, params) -> rows, tx(fn), close() }
+let opening;
 
-const SCHEMA = `
-CREATE TABLE IF NOT EXISTS admins (
-  id            INTEGER PRIMARY KEY AUTOINCREMENT,
-  username      TEXT NOT NULL UNIQUE COLLATE NOCASE,
-  full_name     TEXT NOT NULL,
-  role          TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('admin','lector')),
-  password_hash TEXT NOT NULL,
-  active        INTEGER NOT NULL DEFAULT 1,
-  created_at    TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
-  last_login_at TEXT
-);
+const SCHEMA_SQL = () => fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
 
-CREATE TABLE IF NOT EXISTS sessions (
-  token_hash TEXT PRIMARY KEY,
-  admin_id   INTEGER NOT NULL REFERENCES admins(id) ON DELETE CASCADE,
-  created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
-  expires_at INTEGER NOT NULL
-);
-
--- AUTOINCREMENT garantiza que un id (y por tanto un número UPP) nunca se reutiliza.
-CREATE TABLE IF NOT EXISTS registrations (
-  id                INTEGER PRIMARY KEY AUTOINCREMENT,
-  code              TEXT UNIQUE,
-  idempotency_key   TEXT UNIQUE,
-  status            TEXT NOT NULL DEFAULT 'pendiente' CHECK (status IN ('pendiente','aprobada','rechazada')),
-  payment_received  INTEGER NOT NULL DEFAULT 0,
-  -- A. Datos personales
-  full_name         TEXT NOT NULL,
-  document_number   TEXT,
-  phone             TEXT NOT NULL,
-  email             TEXT NOT NULL,
-  neighborhood      TEXT NOT NULL,
-  -- B. Emprendimiento
-  business_name     TEXT NOT NULL,
-  manager_name      TEXT NOT NULL,
-  category          TEXT NOT NULL,
-  products_description TEXT NOT NULL,
-  social_media      TEXT,
-  photo_file        TEXT,
-  -- C. Puesto
-  products_to_bring TEXT NOT NULL,
-  space_needed      TEXT NOT NULL,
-  needs_table       INTEGER NOT NULL,
-  brings_own_table  INTEGER NOT NULL,
-  needs_power       INTEGER NOT NULL,
-  special_request   TEXT,
-  -- D. Confirmación
-  accepted_terms    INTEGER NOT NULL,
-  accepted_data     INTEGER NOT NULL,
-  accepted_truth    INTEGER NOT NULL,
-  accepted_fee      INTEGER NOT NULL,
-  fee_cop           INTEGER NOT NULL,
-  -- Administración
-  admin_notes       TEXT,
-  created_at        TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
-  updated_at        TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
-  reviewed_by       INTEGER REFERENCES admins(id),
-  reviewed_at       TEXT
-);
-CREATE INDEX IF NOT EXISTS idx_reg_status   ON registrations(status);
-CREATE INDEX IF NOT EXISTS idx_reg_category ON registrations(category);
-
-CREATE TABLE IF NOT EXISTS registration_history (
-  id              INTEGER PRIMARY KEY AUTOINCREMENT,
-  registration_id INTEGER NOT NULL REFERENCES registrations(id) ON DELETE CASCADE,
-  admin_id        INTEGER REFERENCES admins(id),
-  action          TEXT NOT NULL,
-  detail          TEXT,
-  created_at      TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
-);
-CREATE INDEX IF NOT EXISTS idx_hist_reg ON registration_history(registration_id);
-
-CREATE TABLE IF NOT EXISTS settings (
-  key   TEXT PRIMARY KEY,
-  value TEXT
-);
-`;
-
-function open() {
-  if (db) return db;
-  fs.mkdirSync(config.dataDir, { recursive: true });
-  fs.mkdirSync(config.uploadsDir, { recursive: true });
-  fs.mkdirSync(config.mediaDir, { recursive: true });
-  db = new DatabaseSync(path.join(config.dataDir, 'patita.db'));
-  db.exec('PRAGMA journal_mode = WAL;');
-  db.exec('PRAGMA foreign_keys = ON;');
-  db.exec('PRAGMA busy_timeout = 5000;');
-  db.exec(SCHEMA);
-  return db;
+async function openPg() {
+  const { Pool } = require('pg');
+  const pool = new Pool({
+    connectionString: config.databaseUrl,
+    max: Number(process.env.PG_POOL_MAX) || 3,
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 10_000,
+    ssl: config.databaseSsl ? { rejectUnauthorized: false } : undefined,
+  });
+  return {
+    async query(text, params = []) { return (await pool.query(text, params)).rows; },
+    async tx(fn) {
+      const client = await pool.connect();
+      try {
+        await client.query('BEGIN');
+        const result = await fn({ query: async (t, p = []) => (await client.query(t, p)).rows });
+        await client.query('COMMIT');
+        return result;
+      } catch (err) {
+        await client.query('ROLLBACK').catch(() => {});
+        throw err;
+      } finally {
+        client.release();
+      }
+    },
+    close: () => pool.end(),
+  };
 }
 
-function get() {
-  return db || open();
+async function openPglite() {
+  const { PGlite } = await import('@electric-sql/pglite');
+  const dir = config.memoryDb ? undefined : path.join(config.dataDir, 'pgdata');
+  if (dir) fs.mkdirSync(dir, { recursive: true });
+  const pg = dir ? new PGlite(dir) : new PGlite();
+  await pg.exec(SCHEMA_SQL());
+  let chain = Promise.resolve(); // PGlite es de una sola conexión: serializamos las transacciones
+  const query = async (t, p = []) => (await pg.query(t, p)).rows;
+  return {
+    query,
+    tx(fn) {
+      const run = chain.then(() => pg.transaction((trx) => fn({ query: async (t, p = []) => (await trx.query(t, p)).rows })));
+      chain = run.catch(() => {});
+      return run;
+    },
+    close: () => pg.close(),
+  };
 }
 
-function close() {
-  if (db) {
-    db.close();
-    db = undefined;
+async function open() {
+  if (impl) return impl;
+  if (!opening) {
+    opening = (config.databaseUrl ? openPg() : openPglite()).then((i) => { impl = i; return i; });
   }
+  return opening;
 }
 
-/** Ejecuta fn dentro de una transacción con bloqueo de escritura inmediato. */
-function transaction(fn) {
-  const d = get();
-  d.exec('BEGIN IMMEDIATE');
-  try {
-    const result = fn(d);
-    d.exec('COMMIT');
-    return result;
-  } catch (err) {
-    try { d.exec('ROLLBACK'); } catch { /* ignorar */ }
-    throw err;
-  }
-}
+async function query(text, params) { return (await open()).query(text, params); }
+async function one(text, params) { return (await query(text, params))[0] || null; }
+async function tx(fn) { return (await open()).tx(fn); }
+async function close() { if (impl) { await impl.close(); impl = undefined; opening = undefined; } }
 
-module.exports = { open, get, close, transaction };
+module.exports = { open, query, one, tx, close, SCHEMA_SQL };

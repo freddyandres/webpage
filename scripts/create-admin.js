@@ -36,7 +36,7 @@ function askHidden(question) {
 }
 
 (async () => {
-  db.open();
+  await db.open();
   console.log('\n🐾 Unidos por una Patita — crear administrador\n');
   const username = (arg('user') || await ask('Usuario (por ejemplo: samantha o angel): ')).toLowerCase();
   const fullName = arg('name') || KNOWN[username] || await ask('Nombre completo: ');
@@ -48,12 +48,12 @@ function askHidden(question) {
     if (again !== password) { console.error('\n❌ Las contraseñas no coinciden.'); process.exit(1); }
   }
   try {
-    const r = auth.createAdmin({ username, fullName, password, role });
+    const r = await auth.createAdmin({ username, fullName, password, role });
     console.log(`\n✅ Cuenta "${username}" (${fullName}, rol: ${role}) ${r.updated ? 'actualizada' : 'creada'} correctamente.`);
   } catch (err) {
     console.error(`\n❌ ${err.message}`);
-    process.exit(1);
+    process.exitCode = 1;
   } finally {
-    db.close();
+    await db.close();
   }
 })();

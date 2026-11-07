@@ -5,6 +5,7 @@
  * Sin dependencias externas: solo módulos integrados de Node.js (>= 22.13).
  */
 const http = require('node:http');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -117,20 +118,15 @@ function checkSameOrigin(req) {
   }
 }
 
-/* --------- límite de peticiones por IP (formularios públicos) --------- */
-const buckets = new Map();
-function rateLimit(name, ip, max, windowMs) {
-  const key = `${name}|${ip}`;
-  const now = Date.now();
-  const b = buckets.get(key);
-  if (!b || now - b.start > windowMs) { buckets.set(key, { start: now, count: 1 }); return; }
-  b.count += 1;
-  if (b.count > max) throw new HttpError(429, 'Has realizado muchas solicitudes seguidas. Espera unos minutos e inténtalo de nuevo.');
+/* --------- límite de peticiones por IP (formularios públicos), guardado en la base --------- */
+async function rateLimit(name, ip, max, windowMinutes) {
+  const bucket = `${name}|${crypto.createHash('sha256').update(String(ip)).digest('hex')}`;
+  const { n } = await db.one(`SELECT count(*)::int AS n FROM patita.rate_events WHERE bucket = $1 AND at > now() - make_interval(mins => $2)`,
+    [bucket, windowMinutes]);
+  if (n >= max) throw new HttpError(429, 'Has realizado muchas solicitudes seguidas. Espera unos minutos e inténtalo de nuevo.');
+  await db.query('INSERT INTO patita.rate_events (bucket) VALUES ($1)', [bucket]);
+  if (Math.random() < 0.05) db.query("DELETE FROM patita.rate_events WHERE at < now() - interval '1 day'").catch(() => {});
 }
-setInterval(() => {
-  const now = Date.now();
-  for (const [k, b] of buckets) if (now - b.start > 3600_000) buckets.delete(k);
-}, 600_000).unref();
 
 /* ---------------- archivos estáticos ---------------- */
 function serveFile(req, res, filePath, { cache = 'public, max-age=300', extraHeaders = {} } = {}) {
@@ -161,8 +157,8 @@ function notFound(req, res) {
 }
 
 /* ---------------- API ---------------- */
-function requireAdmin(req, { write = false } = {}) {
-  const admin = auth.sessionAdmin(parseCookies(req)[SESSION_COOKIE]);
+async function requireAdmin(req, { write = false } = {}) {
+  const admin = await auth.sessionAdmin(parseCookies(req)[SESSION_COOKIE]);
   if (!admin) throw new HttpError(401, 'Tu sesión expiró o no has iniciado sesión.');
   if (write && admin.role !== 'admin') throw new HttpError(403, 'Tu cuenta solo tiene permisos de consulta.');
   return admin;
@@ -177,31 +173,31 @@ async function handleApi(req, res, url) {
   /* ---- Público ---- */
   if (pathname === '/api/public/config' && method === 'GET') {
     return sendJson(res, 200, {
-      categories: CATEGORIES, spaceOptions: SPACE_OPTIONS, feeCop: config.feeCop, contact: CONTACT, ...settings.publicView(),
+      categories: CATEGORIES, spaceOptions: SPACE_OPTIONS, feeCop: config.feeCop, contact: CONTACT, ...(await settings.publicView()),
     });
   }
 
   if (pathname === '/api/registrations' && method === 'POST') {
-    rateLimit('registro', ip, 8, 10 * 60_000);
+    await rateLimit('registro', ip, 8, 10);
     const body = await readJson(req, 4 * 1024 * 1024);
     if (clean(body.website)) return sendJson(res, 201, { code: 'UPP-000', status: 'pendiente' }); // trampa anti-spam
     const { data, errors } = validateRegistration(body);
     if (errors) return sendJson(res, 422, { error: 'Revisa los campos marcados.', fields: errors });
     const photo = decodeImage(body.photo, 3 * 1024 * 1024);
     if (photo.error) return sendJson(res, 422, { error: photo.error, fields: { photo: photo.error } });
-    const result = registrations.create(data, photo.none ? null : photo);
+    const result = await registrations.create(data, photo.none ? null : photo);
     return sendJson(res, 201, { code: result.code, status: result.status, statusLabel: 'Solicitud recibida, pendiente de revisión' });
   }
 
   if (pathname === '/api/registrations/lookup' && method === 'POST') {
-    rateLimit('consulta', ip, 15, 10 * 60_000);
+    await rateLimit('consulta', ip, 15, 10);
     const body = await readJson(req, 4096);
     const code = clean(body.code).toUpperCase().replace(/\s/g, '');
     const phone = clean(body.phone).replace(/\D/g, '').replace(/^57(?=\d{10}$)/, '');
     if (!/^UPP-\d{3,}$/.test(code) || !/^3\d{9}$/.test(phone)) {
       return sendJson(res, 422, { error: 'Escribe tu número de inscripción (por ejemplo UPP-001) y el celular con el que te inscribiste.' });
     }
-    const found = registrations.publicLookup(code, phone);
+    const found = await registrations.publicLookup(code, phone);
     if (!found) return sendJson(res, 404, { error: 'No encontramos una inscripción con ese número y celular. Revisa los datos.' });
     return sendJson(res, 200, found);
   }
@@ -209,36 +205,36 @@ async function handleApi(req, res, url) {
   /* ---- Administración ---- */
   if (pathname === '/api/admin/login' && method === 'POST') {
     const body = await readJson(req, 4096);
-    const result = auth.login(clean(body.username), typeof body.password === 'string' ? body.password : '', ip);
+    const result = await auth.login(clean(body.username), typeof body.password === 'string' ? body.password : '', ip);
     if (result.error) return sendJson(res, result.status, { error: result.error });
     res.setHeader('Set-Cookie', sessionCookie(result.token, config.sessionHours * 3600));
     return sendJson(res, 200, { admin: result.admin });
   }
 
   if (pathname === '/api/admin/logout' && method === 'POST') {
-    auth.logout(parseCookies(req)[SESSION_COOKIE]);
+    await auth.logout(parseCookies(req)[SESSION_COOKIE]);
     res.setHeader('Set-Cookie', sessionCookie('', 0));
     return sendJson(res, 200, { ok: true });
   }
 
   if (!pathname.startsWith('/api/admin/')) throw new HttpError(404, 'No encontrado.');
   const isWrite = !['GET', 'HEAD'].includes(method);
-  const admin = requireAdmin(req, { write: isWrite && pathname !== '/api/admin/password' });
+  const admin = await requireAdmin(req, { write: isWrite && pathname !== '/api/admin/password' });
 
   if (pathname === '/api/admin/me' && method === 'GET') {
     return sendJson(res, 200, { admin, catalog: { categories: CATEGORIES, statuses: STATUSES, spaceOptions: SPACE_OPTIONS } });
   }
 
-  if (pathname === '/api/admin/stats' && method === 'GET') return sendJson(res, 200, registrations.stats());
+  if (pathname === '/api/admin/stats' && method === 'GET') return sendJson(res, 200, await registrations.stats());
 
   if (pathname === '/api/admin/registrations' && method === 'GET') {
     const p = url.searchParams;
-    return sendJson(res, 200, { items: registrations.list({ q: p.get('q'), category: p.get('category'), status: p.get('status') }) });
+    return sendJson(res, 200, { items: await registrations.list({ q: p.get('q'), category: p.get('category'), status: p.get('status') }) });
   }
 
   let m = /^\/api\/admin\/registrations\/(\d+)$/.exec(pathname);
   if (m && method === 'GET') {
-    const item = registrations.getById(m[1]);
+    const item = await registrations.getById(m[1]);
     return item ? sendJson(res, 200, item) : sendJson(res, 404, { error: 'Inscripción no encontrada.' });
   }
   if (m && method === 'PATCH') {
@@ -247,22 +243,23 @@ async function handleApi(req, res, url) {
     if ('status' in body) changes.status = String(body.status);
     if ('paymentReceived' in body) changes.paymentReceived = body.paymentReceived === true;
     if ('adminNotes' in body) changes.adminNotes = typeof body.adminNotes === 'string' ? body.adminNotes : '';
-    const r = registrations.update(m[1], changes, admin);
+    const r = await registrations.update(m[1], changes, admin);
     if (r.notFound) return sendJson(res, 404, { error: 'Inscripción no encontrada.' });
     if (r.error) return sendJson(res, 409, { error: r.error });
-    return sendJson(res, 200, registrations.getById(m[1]));
+    return sendJson(res, 200, await registrations.getById(m[1]));
   }
 
   m = /^\/api\/admin\/registrations\/(\d+)\/photo$/.exec(pathname);
   if (m && method === 'GET') {
-    const p = registrations.photoPath(m[1]);
-    if (!p) return sendJson(res, 404, { error: 'Sin fotografía.' });
-    return serveFile(req, res, p, { cache: 'private, no-store' });
+    const photo = await registrations.getPhoto(m[1]);
+    if (!photo) return sendJson(res, 404, { error: 'Sin fotografía.' });
+    res.writeHead(200, { 'Content-Type': photo.mime, 'Content-Length': photo.data.length, 'Cache-Control': 'private, no-store' });
+    return res.end(photo.data);
   }
 
   if ((pathname === '/api/admin/export.csv' || pathname === '/api/admin/export.xlsx') && method === 'GET') {
     const stamp = new Date().toISOString().slice(0, 10);
-    const rows = registrations.exportRows();
+    const rows = await registrations.exportRows();
     if (pathname.endsWith('.csv')) {
       const csv = buildCsv(registrations.EXPORT_HEADERS, rows);
       res.writeHead(200, { 'Content-Type': 'text/csv; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Disposition': `attachment; filename="inscripciones-unidos-por-una-patita-${stamp}.csv"` });
@@ -276,33 +273,34 @@ async function handleApi(req, res, url) {
     return res.end(xlsx);
   }
 
-  if (pathname === '/api/admin/settings' && method === 'GET') return sendJson(res, 200, settings.adminView());
+  if (pathname === '/api/admin/settings' && method === 'GET') return sendJson(res, 200, await settings.adminView());
   if (pathname === '/api/admin/settings' && method === 'PUT') {
-    const err = settings.updateFromAdmin(await readJson(req, 16 * 1024));
+    const err = await settings.updateFromAdmin(await readJson(req, 16 * 1024));
     if (err) return sendJson(res, 422, { error: err });
-    return sendJson(res, 200, settings.adminView());
+    return sendJson(res, 200, await settings.adminView());
   }
   if (pathname === '/api/admin/settings/luna-photo' && method === 'POST') {
-    const body = await readJson(req, 8 * 1024 * 1024);
-    const img = decodeImage(body.photo, 6 * 1024 * 1024);
+    const body = await readJson(req, 4 * 1024 * 1024);
+    const img = decodeImage(body.photo, 3 * 1024 * 1024);
     if (img.none || img.error) return sendJson(res, 422, { error: img.error || 'Selecciona una fotografía.' });
-    settings.setLunaPhoto(img.buf, img.ext);
-    return sendJson(res, 200, settings.adminView());
+    await settings.setLunaPhoto(img.buf, img.ext);
+    return sendJson(res, 200, await settings.adminView());
   }
   if (pathname === '/api/admin/settings/luna-photo' && method === 'DELETE') {
-    settings.removeLunaPhoto();
-    return sendJson(res, 200, settings.adminView());
+    await settings.removeLunaPhoto();
+    return sendJson(res, 200, await settings.adminView());
   }
 
   if (pathname === '/api/admin/password' && method === 'POST') {
     const body = await readJson(req, 4096);
-    const err = auth.changePassword(admin.id, String(body.currentPassword || ''), String(body.newPassword || ''));
+    const err = await auth.changePassword(admin.id, String(body.currentPassword || ''), String(body.newPassword || ''));
     if (err) return sendJson(res, 422, { error: err });
     return sendJson(res, 200, { ok: true });
   }
 
   if (pathname === '/api/admin/admins' && method === 'GET') {
-    const items = db.get().prepare('SELECT username, full_name AS fullName, role, last_login_at AS lastLoginAt FROM admins WHERE active = 1 ORDER BY id').all();
+    const items = (await db.query('SELECT username, full_name, role, last_login_at FROM patita.admins WHERE active ORDER BY id'))
+      .map((a) => ({ username: a.username, fullName: a.full_name, role: a.role, lastLoginAt: a.last_login_at ? new Date(a.last_login_at).toISOString() : null }));
     return sendJson(res, 200, { items });
   }
 
@@ -317,20 +315,24 @@ async function handler(req, res) {
   const { pathname } = url;
 
   try {
-    if (pathname.startsWith('/api/')) return await handleApi(req, res, url);
+    if (pathname.startsWith('/api/')) { await ready(); return await handleApi(req, res, url); }
 
     if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405, { Allow: 'GET, HEAD' }); return res.end(); }
 
     if (pathname.startsWith('/media/')) {
-      const name = path.basename(decodeURIComponent(pathname.slice(7)));
+      const name = pathname.slice(7);
       if (!/^luna-\d+\.(jpg|png|webp)$/.test(name)) return notFound(req, res);
-      return serveFile(req, res, path.join(config.mediaDir, name), { cache: 'public, max-age=86400' });
+      await ready();
+      const media = await settings.getMedia(name);
+      if (!media) return notFound(req, res);
+      const data = Buffer.from(media.data);
+      res.writeHead(200, { 'Content-Type': media.mime, 'Content-Length': data.length, 'Cache-Control': 'public, max-age=31536000, immutable' });
+      return res.end(req.method === 'HEAD' ? undefined : data);
     }
 
     if (pathname === '/admin') { res.writeHead(301, { Location: '/admin/' }); return res.end(); }
     if (pathname.startsWith('/admin/')) {
-      const rel = pathname === '/admin/' ? 'index.html' : pathname.slice(7);
-      const file = safeJoin(config.adminDir, rel);
+      const file = safeJoin(config.publicDir, pathname === '/admin/' ? '/admin/index.html' : pathname);
       if (!file) return notFound(req, res);
       return serveFile(req, res, file, { cache: 'no-cache', extraHeaders: { 'X-Robots-Tag': 'noindex, nofollow' } });
     }
@@ -347,23 +349,32 @@ async function handler(req, res) {
   }
 }
 
+/** Inicializa la base y las cuentas iniciales una sola vez por instancia. */
+let readyPromise;
+function ready() {
+  if (!readyPromise) {
+    readyPromise = (async () => { await db.open(); await auth.bootstrapFromEnv(); })();
+    readyPromise.catch(() => { readyPromise = undefined; });
+  }
+  return readyPromise;
+}
+
 function createServer() {
-  db.open();
-  auth.bootstrapFromEnv();
   return http.createServer(handler);
 }
 
 if (require.main === module) {
   const server = createServer();
-  server.listen(config.port, config.host, () => {
+  server.listen(config.port, config.host, async () => {
     console.log(`🐾 Unidos por una Patita escuchando en http://localhost:${config.port}`);
     console.log(`   Panel administrativo: http://localhost:${config.port}/admin/`);
-    const count = db.get().prepare('SELECT COUNT(*) AS n FROM admins').get().n;
-    if (!count) console.log('   ⚠️  Aún no hay administradores. Crea uno con: npm run admin:create');
+    await ready();
+    const { n } = await db.one('SELECT count(*)::int AS n FROM patita.admins');
+    if (!n) console.log('   ⚠️  Aún no hay administradores. Crea uno con: npm run admin:create');
   });
   const shutdown = () => server.close(() => { db.close(); process.exit(0); });
   process.on('SIGINT', shutdown);
   process.on('SIGTERM', shutdown);
 }
 
-module.exports = { createServer };
+module.exports = { createServer, handler, ready };

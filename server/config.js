@@ -13,10 +13,13 @@ module.exports = {
   port: Number(process.env.PORT) || 3000,
   host: process.env.HOST || '0.0.0.0',
   dataDir,
-  uploadsDir: path.join(dataDir, 'uploads'), // fotos de productos (privadas, solo administradores)
-  mediaDir: path.join(dataDir, 'media'),     // medios públicos (fotografía de Luna)
   publicDir: path.join(root, 'public'),
-  adminDir: path.join(root, 'admin'),
+
+  /** Cadena de conexión PostgreSQL (Supabase). Sin ella se usa PGlite local en DATA_DIR. */
+  databaseUrl: process.env.DATABASE_URL || '',
+  databaseSsl: process.env.DATABASE_SSL !== 'false',
+  /** Solo para pruebas: base de datos en memoria. */
+  memoryDb: process.env.PATITA_MEMORY_DB === 'true',
 
   /** Valor de inscripción por puesto, en pesos colombianos. */
   feeCop: 10000,
@@ -30,10 +33,10 @@ module.exports = {
    */
   secureCookies: process.env.COOKIE_SECURE
     ? process.env.COOKIE_SECURE === 'true'
-    : process.env.NODE_ENV === 'production',
+    : process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production' || process.env.VERCEL_ENV === 'preview',
 
   /** Confiar en X-Forwarded-For (solo si hay un proxy inverso delante). */
-  trustProxy: process.env.TRUST_PROXY === 'true',
+  trustProxy: process.env.TRUST_PROXY === 'true' || !!process.env.VERCEL,
 
   isTest: process.env.NODE_ENV === 'test',
 };

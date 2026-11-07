@@ -8,8 +8,10 @@ const path = require('node:path');
 const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'patita-test-'));
 process.env.DATA_DIR = dataDir;
 process.env.NODE_ENV = 'test';
+process.env.PATITA_MEMORY_DB = 'true';
+delete process.env.DATABASE_URL;
 
-const { createServer } = require('../server/index');
+const { createServer, ready } = require('../server/index');
 const auth = require('../server/auth');
 const db = require('../server/db');
 
@@ -29,13 +31,14 @@ before(async () => {
   server = createServer();
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
   base = `http://127.0.0.1:${server.address().port}`;
-  auth.createAdmin({ username: 'samantha', fullName: 'Samantha Castillo Cano', password: 'ClaveSegura123' });
-  auth.createAdmin({ username: 'lector', fullName: 'Solo Lectura', password: 'ClaveLectura123', role: 'lector' });
+  await ready();
+  await auth.createAdmin({ username: 'samantha', fullName: 'Samantha Castillo Cano', password: 'ClaveSegura123' });
+  await auth.createAdmin({ username: 'lector', fullName: 'Solo Lectura', password: 'ClaveLectura123', role: 'lector' });
 });
 
-after(() => {
+after(async () => {
   server.close();
-  db.close();
+  await db.close();
   fs.rmSync(dataDir, { recursive: true, force: true });
 });
 
@@ -139,8 +142,25 @@ test('bloquea peticiones desde otro origen', async () => {
   assert.equal(r.status, 403);
 });
 
-test('las contraseñas se guardan cifradas', () => {
-  const row = db.get().prepare("SELECT password_hash FROM admins WHERE username = 'samantha'").get();
+test('la fotografía se guarda y solo la ve un administrador', async () => {
+  const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==';
+  const r = await (await post('/api/registrations', valid({ phone: '3201112233', photo: png }))).json();
+  const cookie = await login();
+  const list = await (await fetch(`${base}/api/admin/registrations?q=${r.code}`, { headers: { cookie } })).json();
+  const url = `${base}/api/admin/registrations/${list.items[0].id}/photo`;
+  assert.equal((await fetch(url)).status, 401);
+  const img = await fetch(url, { headers: { cookie } });
+  assert.equal(img.headers.get('content-type'), 'image/png');
+});
+
+test('bloqueo tras 5 intentos fallidos', async () => {
+  for (let i = 0; i < 5; i++) await post('/api/admin/login', { username: 'lector', password: 'malmalmal1' });
+  const r = await post('/api/admin/login', { username: 'lector', password: 'ClaveLectura123' });
+  assert.equal(r.status, 429);
+});
+
+test('las contraseñas se guardan cifradas', async () => {
+  const row = await db.one("SELECT password_hash FROM patita.admins WHERE username = 'samantha'");
   assert.match(row.password_hash, /^scrypt\$/);
   assert.ok(!row.password_hash.includes('ClaveSegura123'));
 });
