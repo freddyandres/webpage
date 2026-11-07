@@ -25,38 +25,34 @@ Página web y panel administrativo de **Unidos por una Patita**, una feria solid
 - Configuración de los espacios pendientes: **fotografía e historia de Luna, enlace de Instagram, dirección exacta** y límite de puestos.
 - Cambio de contraseña.
 
-## Requisitos
+## Publicación (Vercel + Supabase)
 
-- [Node.js](https://nodejs.org) **22.13 o superior**. No hay dependencias externas: no hace falta `npm install`.
-- La base de datos es SQLite (incluida en Node.js) y se guarda en la carpeta `data/` (o en `DATA_DIR`).
+- **Sitio:** https://unidos-por-una-patita.vercel.app · **Panel:** https://unidos-por-una-patita.vercel.app/admin/
+- **Hosting:** Vercel (proyecto `unidos-por-una-patita`). Los archivos de `public/` se sirven como estáticos y `api/index.js` atiende `/api/*` y `/media/*`.
+- **Base de datos:** PostgreSQL en Supabase, esquema `patita` dentro del proyecto «Aula Contigo», con un usuario propio (`patita_app`) que solo tiene acceso a ese esquema. Las fotografías también se guardan en la base.
+- **Variables de entorno en Vercel:** `DATABASE_URL` (secreta), `NODE_ENV=production`, `NODEJS_HELPERS=0`.
 
-## Puesta en marcha
+### Crear las cuentas de Samantha y Ángel
+
+En Vercel → proyecto → *Settings* → *Environment Variables*, agrega como **Sensitive**:
+
+- `ADMIN_SAMANTHA_PASSWORD` → usuario `samantha`
+- `ADMIN_ANGEL_PASSWORD` → usuario `angel`
+
+(mínimo 10 caracteres, con letras y números). Luego *Deployments* → *Redeploy*. Al primer uso se crean las cuentas; después cada persona puede cambiar su contraseña en «Mi cuenta» y puedes borrar esas variables (nunca sobrescriben una contraseña ya creada).
+
+## Desarrollo local
+
+Requiere Node.js 22. Sin `DATABASE_URL` se usa PGlite (PostgreSQL embebido) en `data/`.
 
 ```bash
-# 1. Crear las cuentas de los administradores (la contraseña se escribe de forma oculta)
+npm install
 npm run admin:create -- --user samantha
-npm run admin:create -- --user angel
-
-# 2. Iniciar el servidor
-npm start
+npm start            # http://localhost:3000  ·  panel: /admin/
+npm test
 ```
 
-- Página pública: http://localhost:3000
-- Panel administrativo: http://localhost:3000/admin/
-
-Las contraseñas deben tener al menos 10 caracteres, con letras y números. Ejecutar de nuevo `admin:create` con el mismo usuario restablece su contraseña (y cierra sus sesiones abiertas). Para una cuenta de solo consulta: `npm run admin:create -- --user invitado --name "Nombre" --role lector`.
-
-## Publicar en internet
-
-El sitio necesita un servidor con Node.js (GitHub Pages no sirve, porque solo publica páginas estáticas). Sirven, por ejemplo, Render, Railway, Fly.io o un VPS. Lo importante:
-
-1. Comando de inicio: `npm start`.
-2. **Disco persistente** montado en la carpeta de `DATA_DIR` (por ejemplo `/var/data/patita`). Sin él, las inscripciones se borran al reiniciar el servicio.
-3. Variables de entorno (ver `.env.example`): `NODE_ENV=production`, `DATA_DIR`, `COOKIE_SECURE=true`, `TRUST_PROXY=true`.
-4. Si el hosting no tiene consola para ejecutar `admin:create`, define como **secretos** `ADMIN_SAMANTHA_PASSWORD` y `ADMIN_ANGEL_PASSWORD`: al arrancar se crean las cuentas `samantha` y `angel` si aún no existen (nunca sobrescriben una contraseña ya establecida). Después, cada persona puede cambiar su contraseña desde «Mi cuenta» y se pueden borrar esas variables.
-5. Usa siempre HTTPS.
-
-**Copias de seguridad:** basta con copiar la carpeta `DATA_DIR` (contiene `patita.db` y las fotografías).
+Con `DATABASE_URL` definida, `admin:create` crea o restablece la cuenta directamente en Supabase.
 
 ## Seguridad y protección de datos
 
@@ -66,15 +62,16 @@ El sitio necesita un servidor con Node.js (GitHub Pages no sirve, porque solo pu
 - Permisos por rol: `admin` (gestión completa) y `lector` (solo consulta), verificados en el servidor.
 - Protección contra peticiones de otros sitios (CSRF), cabeceras de seguridad (CSP, anti-iframe), límite de envíos por IP y trampa anti-spam.
 - Las fotos de los productos son privadas: solo se ven desde el panel con sesión iniciada.
+- La base del proyecto está aislada: su usuario no puede leer otras tablas del proyecto de Supabase.
 - Validación completa en el servidor y numeración atómica: los números `UPP` no se repiten ni se reutilizan, y un doble clic no crea dos solicitudes.
 - La exportación CSV evita la inyección de fórmulas en Excel.
 
 ## Estructura
 
 ```
-server/     servidor, API, base de datos, autenticación, exportación
-public/     página pública (HTML, CSS, JS, ilustraciones)
-admin/      panel administrativo
+api/        función de Vercel
+server/     servidor, API, base de datos (schema.sql), autenticación, exportación
+public/     página pública; public/admin/ panel administrativo
 scripts/    creación de administradores
 test/       pruebas automáticas (npm test)
 ```
