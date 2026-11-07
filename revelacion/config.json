@@ -1,0 +1,10 @@
+{
+  "_ayuda": "1) Pega el link del en vivo en 'youtube' (o en 'facebook', o cualquier otro en 'url'). 2) Si transmites con el celular en vertical, pon 'formato' en 'vertical'. 3) Cuando se haga la revelación escribe \"niño\" o \"niña\" en 'revelado'. La página revisa este archivo cada 30 segundos, así que quienes la tengan abierta verán los cambios sin recargar.",
+  "inicio": "2026-11-08T15:00:00-05:00",
+  "duracionHoras": 3,
+  "youtube": "",
+  "facebook": "",
+  "url": "",
+  "formato": "horizontal",
+  "revelado": ""
+}
