@@ -406,7 +406,8 @@
   /* ---------------- Sonido (música del video + efectos sintetizados) ---------------- */
   var Sound = (function () {
     var ctx = null, master = null, noiseBuf = null;
-    var enabled = store.get("revelacion-sonido") === "1", live = false, paused = false, videoOn = false;
+    // Sonido activado por defecto; solo queda apagado si la persona lo silenció
+    var enabled = store.get("revelacion-sonido") !== "0", live = false, paused = false, videoOn = false;
     // Música de fondo: el audio del video del anuncio, preparado para repetirse sin cortes
     var MUSIC_URL = "assets/musica.m4a", MUSIC_VOL = 0.55;
     var musicBuf = null, musicLoading = null, musicGain = null, musicSrc = null, wantMusic = false;
@@ -562,15 +563,22 @@
       render();
       btn.addEventListener("click", function () { setEnabled(!enabled); });
       if (enabled) {
-        // El navegador exige un toque antes de sonar: lo esperamos
-        hint.textContent = "Toca la pantalla para escuchar 🎶";
-        hint.classList.add("show");
+        if (hint) { hint.remove(); hint = null; }
+        // Intenta sonar sola; si el navegador lo bloquea, arranca con el primer toque
+        var events = ["pointerdown", "touchend", "click", "keydown"];
         var unlock = function () {
-          document.removeEventListener("pointerdown", unlock, true);
-          if (hint) { hint.remove(); hint = null; }
+          events.forEach(function (ev) { document.removeEventListener(ev, unlock, true); });
+          hideSplash();
           if (enabled) { ensure(); startMusic(); }
         };
-        document.addEventListener("pointerdown", unlock, true);
+        events.forEach(function (ev) { document.addEventListener(ev, unlock, true); });
+        if (ensure()) {
+          startMusic();
+          setTimeout(function () {
+            if (ctx.state === "running") unlock();
+            else showSplash();
+          }, 350);
+        }
       } else {
         setTimeout(function () { if (hint) hint.classList.add("show"); }, 1800);
         setTimeout(function () { if (hint) hint.classList.remove("show"); }, 12000);
@@ -578,6 +586,23 @@
       document.addEventListener("visibilitychange", function () {
         if (document.hidden) stopMusic(); else startMusic();
       });
+    }
+    function showSplash() {
+      var sp = $("#splash");
+      if (!sp || sp.dataset.done) return;
+      sp.hidden = false;
+      document.body.classList.add("has-splash");
+      $("#splashBtn").focus({ preventScroll: true });
+    }
+    function hideSplash() {
+      var sp = $("#splash");
+      if (!sp || sp.dataset.done) return;
+      sp.dataset.done = "1";
+      document.body.classList.remove("has-splash");
+      if (sp.hidden) { sp.remove(); return; }
+      sp.classList.add("leaving");
+      burst(innerWidth / 2, innerHeight * 0.45, COLORS.mix, 70, { power: 11, hearts: 0.35 });
+      setTimeout(function () { sp.remove(); }, 650);
     }
     function setLive(v) { live = v; if (v) stopMusic(); else startMusic(); }
     function pause(v) { paused = v; if (v) stopMusic(); else startMusic(); }
