@@ -113,6 +113,17 @@
 
   <div class="reveal-ribbon" id="revealRibbon" hidden></div>
 
+  <!-- Bienvenida: el primer toque arranca la música (los navegadores no dejan sonar sin tocar) -->
+  <div class="splash" id="splash" role="dialog" aria-modal="true" aria-labelledby="splashTitle" hidden>
+    <div class="splash-inner">
+      <svg class="splash-bear" aria-hidden="true"><use href="#bear"/></svg>
+      <p class="splash-kicker">Revelación · Bebé Castillo Cano</p>
+      <h2 class="splash-title" id="splashTitle"><span class="t-nino">¿Niño</span> <span class="t-o">o</span> <span class="t-nina">Niña?</span></h2>
+      <button class="btn btn-primary splash-btn" id="splashBtn" type="button">Entrar 🎶</button>
+      <p class="splash-note">Con música · sube el volumen 🔊</p>
+    </div>
+  </div>
+
   <main id="inicio">
 
     <!-- HERO -->
