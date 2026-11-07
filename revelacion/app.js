@@ -914,6 +914,14 @@
     setInterval(tick, 1000);
     startBalloons();
     Sound.init();
+    // Al tocar el reel de Instagram se pausa la música de fondo; vuelve al tocar la página
+    var reel = $("#reelFrame");
+    if (reel) {
+      window.addEventListener("blur", function () {
+        setTimeout(function () { if (document.activeElement === reel) Sound.video(true); }, 0);
+      });
+      window.addEventListener("focus", function () { Sound.video(false); });
+    }
     var sv = $("#storyVideo");
     sv.addEventListener("play", function () { Sound.video(true); });
     sv.addEventListener("pause", function () { Sound.video(false); });
