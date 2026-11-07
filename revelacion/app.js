@@ -6,18 +6,15 @@
   "use strict";
 
   var DEFAULTS = {
-    inicio: "2026-11-08T15:00:00-05:00",
-    duracionHoras: 4,
+    inicio: "2026-11-08T17:20:00-05:00",
+    duracionHoras: 2.5,
     youtube: "",
     facebook: "",
     url: "",
     formato: "horizontal",
     revelado: "",
     whatsapp: "",
-    meet: "",
-    meetTelefono: "",
-    meetPin: "",
-    meetMasNumeros: ""
+    meet: ""
   };
   var POLL_MS = 30000;
   var VOTES_POLL_MS = 15000;
@@ -140,18 +137,6 @@
     $("#playerFrame").classList.toggle("meet-mode", !box.hidden);
     if (!url) return;
     $("#meetLink").href = url;
-    var tel = String(cfg.meetTelefono || ""), pin = String(cfg.meetPin || "");
-    var dial = $(".ph-dial");
-    dial.hidden = !tel;
-    if (tel) {
-      $("#meetTel").textContent = "(CO) " + tel;
-      // marca el número y luego el PIN automáticamente
-      $("#meetTel").href = "tel:" + tel.replace(/[^\d+]/g, "") + (pin ? ",," + pin.replace(/[^\d]/g, "") + "%23" : "");
-      $("#meetPin").textContent = pin;
-    }
-    var more = $("#meetMore");
-    more.hidden = !/^https:\/\//.test(cfg.meetMasNumeros || "");
-    if (!more.hidden) more.href = cfg.meetMasNumeros;
   }
   function hasLive() { return !!getEmbed() || !!meetUrl(); }
 
@@ -253,7 +238,7 @@
         $("#phSub").textContent = "Pronto compartiremos el video de este día.";
       } else {
         $("#phTitle").textContent = "Únete por Google Meet 🎥";
-        $("#phSub").textContent = "Domingo 8 de noviembre · 3:00 a 7:00 p.m.";
+        $("#phSub").textContent = "Domingo 8 de noviembre · 5:20 p.m.";
       }
     } else if (!hasStream) {
       if (phase === "casi") {
@@ -264,7 +249,7 @@
         $("#phSub").textContent = "Pronto compartiremos el video de este día.";
       } else {
         $("#phTitle").textContent = "La transmisión aparecerá aquí";
-        $("#phSub").textContent = "Domingo 8 de noviembre · 3:00 p.m.";
+        $("#phSub").textContent = "Domingo 8 de noviembre · 5:20 p.m.";
       }
     }
   }
@@ -832,7 +817,7 @@
 
   /* ---------------- Compartir, calendario, invitación ---------------- */
   function initShare() {
-    var msg = "🧸💙💗 ¡Acompáñanos EN VIVO a descubrir si el Bebé Castillo Cano es niño o niña!\n📅 Domingo 8 de noviembre · 3:00 a 7:00 p.m. (hora Colombia)\n👉 " + PAGE_URL;
+    var msg = "🧸💙💗 ¡Acompáñanos EN VIVO a descubrir si el Bebé Castillo Cano es niño o niña!\n📅 Domingo 8 de noviembre · 5:20 p.m. (hora Colombia)\n👉 " + PAGE_URL;
     $("#waLink").href = "https://wa.me/?text=" + encodeURIComponent(msg);
 
     var copyBtn = $("#copyLink");
@@ -853,7 +838,7 @@
       var ns = $("#nativeShare");
       ns.hidden = false;
       ns.addEventListener("click", function () {
-        navigator.share({ title: "¿Niño o Niña? · Revelación en vivo", text: "¡Acompáñanos en vivo! Domingo 8 de noviembre · 3:00 p.m.", url: PAGE_URL }).catch(function () { /* cancelado */ });
+        navigator.share({ title: "¿Niño o Niña? · Revelación en vivo", text: "¡Acompáñanos en vivo! Domingo 8 de noviembre · 5:20 p.m.", url: PAGE_URL }).catch(function () { /* cancelado */ });
       });
     }
   }
