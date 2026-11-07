@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Ilustración de un perrito">
+  <ellipse cx="100" cy="186" rx="56" ry="7" fill="#8B6B57" opacity=".12"/>
+  <!-- orejas -->
+  <path d="M52 62c-20 4-34 30-30 62 2 14 14 20 24 12 10-8 14-30 20-50 4-14-2-26-14-24z" fill="#A8826A"/>
+  <path d="M148 62c20 4 34 30 30 62-2 14-14 20-24 12-10-8-14-30-20-50-4-14 2-26 14-24z" fill="#A8826A"/>
+  <!-- cabeza -->
+  <path d="M100 42c-36 0-58 26-58 62 0 36 24 60 58 60s58-24 58-60c0-36-22-62-58-62z" fill="#F3E2CC"/>
+  <path d="M120 50c16 4 26 18 26 34 0 12-10 20-22 18-12-2-20-14-18-30 1-12 6-24 14-22z" fill="#D9B99D"/>
+  <!-- hocico -->
+  <ellipse cx="100" cy="132" rx="34" ry="26" fill="#FFF8EE"/>
+  <!-- ojos -->
+  <ellipse cx="76" cy="100" rx="8" ry="9.5" fill="#4A3428"/>
+  <ellipse cx="124" cy="100" rx="8" ry="9.5" fill="#4A3428"/>
+  <circle cx="79" cy="96" r="3" fill="#fff"/>
+  <circle cx="127" cy="96" r="3" fill="#fff"/>
+  <!-- cejas -->
+  <path d="M66 82c5-4 12-5 18-2" stroke="#A8826A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M116 80c6-3 13-2 18 2" stroke="#8B6B57" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <!-- mejillas -->
+  <ellipse cx="64" cy="122" rx="9" ry="6" fill="#F3C6CC"/>
+  <ellipse cx="136" cy="122" rx="9" ry="6" fill="#F3C6CC"/>
+  <!-- nariz -->
+  <path d="M88 118c0-5 6-7 12-7s12 2 12 7c0 6-7 10-12 10s-12-4-12-10z" fill="#4A3428"/>
+  <ellipse cx="96" cy="115" rx="3.5" ry="2" fill="#fff" opacity=".5"/>
+  <!-- boca y lengua -->
+  <path d="M100 128v6" stroke="#4A3428" stroke-width="3" stroke-linecap="round"/>
+  <path d="M90 140c4 6 16 6 20 0" fill="#E39AA6"/>
+  <path d="M84 134c4 6 12 6 16 0 4 6 12 6 16 0" stroke="#4A3428" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M94 138c0 10 3 14 6 14s6-4 6-14" fill="#E39AA6"/>
+  <path d="M100 141v8" stroke="#C9707F" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- collar con corazón -->
+  <path d="M60 158c12 10 26 14 40 14s28-4 40-14l4 8c-13 11-28 16-44 16s-31-5-44-16z" fill="#E39AA6"/>
+  <path d="M100 176c-3-4-9-6-9-11a4.5 4.5 0 0 1 9-2 4.5 4.5 0 0 1 9 2c0 5-6 7-9 11z" fill="#FFF8EE" stroke="#C9707F" stroke-width="1.6"/>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 100" role="img" aria-label="Perrito asomándose">
+  <path d="M38 34c-12 2-20 18-17 36 1 8 8 11 14 7 6-5 8-17 11-29 3-9-1-15-8-14z" fill="#A8826A"/>
+  <path d="M112 34c12 2 20 18 17 36-1 8-8 11-14 7-6-5-8-17-11-29-3-9 1-15 8-14z" fill="#A8826A"/>
+  <path d="M75 22c-26 0-40 18-40 42 0 14 4 26 10 36h60c6-10 10-22 10-36 0-24-14-42-40-42z" fill="#F3E2CC"/>
+  <path d="M88 28c10 3 16 12 15 22-1 7-7 11-14 9-8-2-11-10-10-19 0-7 3-13 9-12z" fill="#D9B99D"/>
+  <ellipse cx="75" cy="80" rx="22" ry="16" fill="#FFF8EE"/>
+  <ellipse cx="60" cy="58" rx="5.5" ry="6.5" fill="#4A3428"/>
+  <ellipse cx="90" cy="58" rx="5.5" ry="6.5" fill="#4A3428"/>
+  <circle cx="62" cy="55.5" r="2" fill="#fff"/><circle cx="92" cy="55.5" r="2" fill="#fff"/>
+  <ellipse cx="51" cy="72" rx="6" ry="4" fill="#F3C6CC"/><ellipse cx="99" cy="72" rx="6" ry="4" fill="#F3C6CC"/>
+  <path d="M67 71c0-3 4-5 8-5s8 2 8 5c0 4-4 6-8 6s-8-2-8-6z" fill="#4A3428"/>
+  <path d="M65 82c3 4 7 4 10 0 3 4 7 4 10 0" stroke="#4A3428" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <!-- patitas -->
+  <rect x="28" y="86" width="30" height="16" rx="8" fill="#F3E2CC"/>
+  <rect x="92" y="86" width="30" height="16" rx="8" fill="#F3E2CC"/>
+  <path d="M38 87v6M48 87v6M102 87v6M112 87v6" stroke="#D9B99D" stroke-width="2" stroke-linecap="round"/>
+</svg>
