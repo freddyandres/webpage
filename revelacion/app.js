@@ -6,8 +6,8 @@
   "use strict";
 
   var DEFAULTS = {
-    inicio: "2026-11-08T15:30:00-05:00",
-    duracionHoras: 2.5,
+    inicio: "2026-11-08T15:00:00-05:00",
+    duracionHoras: 4,
     youtube: "",
     facebook: "",
     url: "",
@@ -253,7 +253,7 @@
         $("#phSub").textContent = "Pronto compartiremos el video de este día.";
       } else {
         $("#phTitle").textContent = "Únete por Google Meet 🎥";
-        $("#phSub").textContent = "Domingo 8 de noviembre · 3:30 a 6:00 p.m.";
+        $("#phSub").textContent = "Domingo 8 de noviembre · 3:00 a 7:00 p.m.";
       }
     } else if (!hasStream) {
       if (phase === "casi") {
@@ -264,7 +264,7 @@
         $("#phSub").textContent = "Pronto compartiremos el video de este día.";
       } else {
         $("#phTitle").textContent = "La transmisión aparecerá aquí";
-        $("#phSub").textContent = "Domingo 8 de noviembre · 3:30 p.m.";
+        $("#phSub").textContent = "Domingo 8 de noviembre · 3:00 p.m.";
       }
     }
   }
@@ -832,7 +832,7 @@
 
   /* ---------------- Compartir, calendario, invitación ---------------- */
   function initShare() {
-    var msg = "🧸💙💗 ¡Acompáñanos EN VIVO a descubrir si el Bebé Castillo Cano es niño o niña!\n📅 Domingo 8 de noviembre · 3:30 p.m. (hora Colombia)\n👉 " + PAGE_URL;
+    var msg = "🧸💙💗 ¡Acompáñanos EN VIVO a descubrir si el Bebé Castillo Cano es niño o niña!\n📅 Domingo 8 de noviembre · 3:00 a 7:00 p.m. (hora Colombia)\n👉 " + PAGE_URL;
     $("#waLink").href = "https://wa.me/?text=" + encodeURIComponent(msg);
 
     var copyBtn = $("#copyLink");
@@ -853,7 +853,7 @@
       var ns = $("#nativeShare");
       ns.hidden = false;
       ns.addEventListener("click", function () {
-        navigator.share({ title: "¿Niño o Niña? · Revelación en vivo", text: "¡Acompáñanos en vivo! Domingo 8 de noviembre · 3:30 p.m.", url: PAGE_URL }).catch(function () { /* cancelado */ });
+        navigator.share({ title: "¿Niño o Niña? · Revelación en vivo", text: "¡Acompáñanos en vivo! Domingo 8 de noviembre · 3:00 p.m.", url: PAGE_URL }).catch(function () { /* cancelado */ });
       });
     }
   }
