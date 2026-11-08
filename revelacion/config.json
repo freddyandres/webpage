@@ -29,6 +29,21 @@
       "foto": "assets/team/04.jpg",
       "team": "niña",
       "nombre": "Honey 🐾"
+    },
+    {
+      "foto": "assets/team/05.jpg",
+      "team": "niño",
+      "nombre": "Tío Jorge"
+    },
+    {
+      "foto": "assets/team/06.jpg",
+      "team": "niño",
+      "nombre": "Prima Sandra"
+    },
+    {
+      "foto": "assets/team/07.jpg",
+      "team": "niño",
+      "nombre": "Tío Julián"
     }
   ]
 }
