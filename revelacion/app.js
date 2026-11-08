@@ -410,7 +410,7 @@
   var Sound = (function () {
     var ctx = null, master = null, noiseBuf = null;
     // Sonido activado por defecto; solo queda apagado si la persona lo silenció
-    var enabled = store.get("revelacion-sonido") !== "0", live = false, paused = false, videoOn = false;
+    var enabled = store.get("revelacion-sonido") !== "0", live = false, paused = false, videoOn = false, unlocked = false;
     // Música de fondo: el audio del video del anuncio, preparado para repetirse sin cortes
     var MUSIC_URL = "assets/musica.m4a", MUSIC_VOL = 0.55;
     var musicBuf = null, musicLoading = null, musicGain = null, musicSrc = null, wantMusic = false;
@@ -571,6 +571,8 @@
         var events = ["pointerdown", "touchend", "click", "keydown"];
         var unlock = function () {
           events.forEach(function (ev) { document.removeEventListener(ev, unlock, true); });
+          unlocked = true;
+          document.dispatchEvent(new Event("sonido-listo"));
           hideSplash();
           if (enabled) { ensure(); startMusic(); }
         };
@@ -611,7 +613,9 @@
     function pause(v) { paused = v; if (v) stopMusic(); else startMusic(); }
     function video(v) { videoOn = v; if (v) stopMusic(); else startMusic(); }
 
-    return { init: init, pop: pop, chime: chime, drumroll: drumroll, fanfare: fanfare, setLive: setLive, pause: pause, video: video };
+    function canSound() { return enabled && unlocked; }
+
+    return { init: init, pop: pop, chime: chime, drumroll: drumroll, fanfare: fanfare, setLive: setLive, pause: pause, video: video, canSound: canSound };
   })();
 
   /* ---------------- Globos que suben (se pueden reventar) ---------------- */
@@ -937,6 +941,41 @@
     els.forEach(function (e) { io.observe(e); });
   }
 
+  /* ---------------- Video del anuncio: arranca solo al verlo ---------------- */
+  // Los navegadores solo dejan sonar un video después de que la persona toca la página
+  // (por eso la bienvenida "Entrar"). Antes de eso arranca en silencio.
+  function initStoryAutoplay(v) {
+    if (REDUCED || !("IntersectionObserver" in window)) return;
+    var userPaused = false, autoPlaying = false, visible = false;
+    function play() {
+      if (userPaused || !v.paused || v.ended) return;
+      autoPlaying = true;
+      v.muted = !Sound.canSound();
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {
+        // si el navegador no deja con sonido, lo intenta en silencio
+        v.muted = true;
+        v.play().catch(function () { /* sin reproducción automática */ });
+      });
+    }
+    v.addEventListener("pause", function () {
+      // si la persona lo pausó a mano mientras se veía, no lo volvemos a arrancar solos
+      if (visible && !v.ended && autoPlaying && document.visibilityState === "visible") userPaused = true;
+    });
+    v.addEventListener("ended", function () { userPaused = true; });
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        visible = en.isIntersecting;
+        if (visible) play();
+        else if (!v.paused) { autoPlaying = false; v.pause(); autoPlaying = true; }
+      });
+    }, { threshold: 0.6 }).observe(v);
+    // al tocar "Entrar", si el video ya iba en silencio, se le pone sonido
+    document.addEventListener("sonido-listo", function () {
+      if (!v.paused && v.muted && Sound.canSound()) v.muted = false;
+    });
+  }
+
   /* ---------------- Arranque ---------------- */
   function init() {
     sizeCanvas();
@@ -965,9 +1004,11 @@
       window.addEventListener("focus", function () { Sound.video(false); });
     }
     var sv = $("#storyVideo");
-    sv.addEventListener("play", function () { Sound.video(true); });
+    sv.addEventListener("play", function () { if (!sv.muted) Sound.video(true); });
+    sv.addEventListener("volumechange", function () { if (!sv.paused) Sound.video(!sv.muted); });
     sv.addEventListener("pause", function () { Sound.video(false); });
     sv.addEventListener("ended", function () { Sound.video(false); });
+    initStoryAutoplay(sv);
 
     $("#revealClose").addEventListener("click", closeReveal);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("#revealOverlay").hidden) closeReveal(); });
