@@ -14,7 +14,8 @@
     formato: "horizontal",
     revelado: "",
     whatsapp: "",
-    meet: ""
+    meet: "",
+    fotos: []
   };
   var POLL_MS = 30000;
   var VOTES_POLL_MS = 15000;
@@ -92,6 +93,7 @@
       checkReveal();
       updatePhotoLinks();
       initCalendar();
+      renderGallery();
     });
   }
 
@@ -876,6 +878,43 @@
       "&location=" + encodeURIComponent(PAGE_URL);
     $("#calLink").href = url;
   }
+  /* ---------------- Galería de fotos del Team (desde config.json) ---------------- */
+  var lastGallery = "";
+  function renderGallery() {
+    var list = Array.isArray(cfg.fotos) ? cfg.fotos.filter(function (f) { return f && f.foto; }) : [];
+    var key = JSON.stringify(list);
+    if (key === lastGallery) return;
+    lastGallery = key;
+    var sec = $("#fotos"), box = $("#gallery");
+    sec.hidden = !list.length;
+    if (!list.length) { box.innerHTML = ""; return; }
+    var nN = 0, nG = 0;
+    box.innerHTML = "";
+    list.forEach(function (f, i) {
+      var t = normTeam(f.team) || "nino";
+      if (t === "nino") nN++; else nG++;
+      var label = t === "nino" ? "Team Niño 💙" : "Team Niña 💗";
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "g-item " + t;
+      b.style.animationDelay = (i * 0.06).toFixed(2) + "s";
+      var img = document.createElement("img");
+      img.src = f.foto; img.alt = "Foto " + label; img.loading = "lazy";
+      var chip = document.createElement("span");
+      chip.className = "g-chip"; chip.textContent = label;
+      b.appendChild(img); b.appendChild(chip);
+      b.addEventListener("click", function () {
+        var d = $("#photoDialog");
+        $("#photoDialogImg").src = f.foto;
+        $("#photoDialogImg").alt = img.alt;
+        $("#photoDialogCap").textContent = label;
+        if (d.showModal) d.showModal(); else window.open(f.foto, "_blank");
+      });
+      box.appendChild(b);
+    });
+    $("#galleryLead").textContent = list.length + (list.length === 1 ? " foto" : " fotos") + " · " + nN + " Team Niño 💙 · " + nG + " Team Niña 💗";
+  }
+
   function updatePhotoLinks() {
     // Si config.json trae un número de WhatsApp, la foto llega directo a ese chat;
     // si no, WhatsApp deja escoger a quién enviarla.
@@ -907,6 +946,8 @@
     initShare();
     initCalendar();
     updatePhotoLinks();
+    var pd = $("#photoDialog");
+    pd.addEventListener("click", function (e) { if (e.target === pd) pd.close(); });
     initScrollReveal();
     applyOverrides();
     updatePlayer();

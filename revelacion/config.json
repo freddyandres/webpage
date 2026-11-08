@@ -1,5 +1,5 @@
 {
-  "_ayuda": "1) La videollamada de Google Meet está en 'meet'. Si además transmites por YouTube o Facebook, pega ese link en 'youtube' o 'facebook' y se verá dentro de la página. 2) Si transmites con el celular en vertical, pon 'formato' en 'vertical'. 3) Cuando se haga la revelación escribe \"niño\" o \"niña\" en 'revelado'. 4) En 'whatsapp' pon el número (con 57 adelante, ej. 573001234567) al que deben llegar las fotos de Team Niño/Niña; si lo dejas vacío, cada persona escoge a quién enviarla. La página revisa este archivo cada 30 segundos, así que quienes la tengan abierta verán los cambios sin recargar.",
+  "_ayuda": "1) La videollamada de Google Meet está en 'meet'. Si además transmites por YouTube o Facebook, pega ese link en 'youtube' o 'facebook' y se verá dentro de la página. 2) Si transmites con el celular en vertical, pon 'formato' en 'vertical'. 3) Cuando se haga la revelación escribe \"niño\" o \"niña\" en 'revelado'. 4) En 'whatsapp' pon el número (con 57 adelante, ej. 573001234567) al que deben llegar las fotos de Team Niño/Niña; si lo dejas vacío, cada persona escoge a quién enviarla. La página revisa este archivo cada 30 segundos, así que quienes la tengan abierta verán los cambios sin recargar. 5) 'fotos' es la galería del Team, en orden: cada foto con su archivo y su equipo (\"niño\" o \"niña\").",
   "inicio": "2026-11-08T17:20:00-05:00",
   "duracionHoras": 2.5,
   "youtube": "",
@@ -8,5 +8,19 @@
   "formato": "horizontal",
   "revelado": "",
   "whatsapp": "573226628855",
-  "meet": "https://meet.google.com/dmu-ajpj-tbn"
+  "meet": "https://meet.google.com/dmu-ajpj-tbn",
+  "fotos": [
+    {
+      "foto": "assets/team/01.jpg",
+      "team": "niño"
+    },
+    {
+      "foto": "assets/team/02.jpg",
+      "team": "niño"
+    },
+    {
+      "foto": "assets/team/03.jpg",
+      "team": "niña"
+    }
+  ]
 }

@@ -275,19 +275,14 @@
       </article>
     </section>
 
-    <!-- CANCIÓN (reel de Instagram) -->
-    <section class="song" id="cancion">
+    <!-- FOTOS DEL TEAM -->
+    <section class="team-gallery" id="fotos" hidden>
       <div class="section-head reveal">
-        <p class="kicker">Nuestra canción</p>
-        <h2 class="script">¡Dale play! 🎶</h2>
-        <p class="lead">La canción que nos acompaña en este momento tan especial.</p>
+        <p class="kicker">Nuestro Team</p>
+        <h2 class="script">¡Así se vistieron! 📸</h2>
+        <p class="lead" id="galleryLead">Las fotos que nos han enviado con su camiseta.</p>
       </div>
-      <figure class="reel reveal">
-        <div class="reel-frame">
-          <iframe id="reelFrame" src="https://www.instagram.com/reel/DYDoONKvmYI/embed/" title="Nuestra canción en Instagram" loading="lazy" scrolling="no" allowtransparency="true" allow="autoplay; encrypted-media; picture-in-picture; clipboard-write" allowfullscreen></iframe>
-        </div>
-        <figcaption><a href="https://www.instagram.com/reel/DYDoONKvmYI/" target="_blank" rel="noopener">¿No carga? Ábrelo en Instagram</a></figcaption>
-      </figure>
+      <div class="gallery" id="gallery"></div>
     </section>
 
     <!-- HISTORIA -->
@@ -335,6 +330,20 @@
         </div>
       </div>
     </section>
+    <!-- CANCIÓN (reel de Instagram) -->
+    <section class="song" id="cancion">
+      <div class="section-head reveal">
+        <p class="kicker">Nuestra canción</p>
+        <h2 class="script">¡Dale play! 🎶</h2>
+        <p class="lead">La canción que nos acompaña en este momento tan especial.</p>
+      </div>
+      <figure class="reel reveal">
+        <div class="reel-frame">
+          <iframe id="reelFrame" src="https://www.instagram.com/reel/DYDoONKvmYI/embed/" title="Nuestra canción en Instagram" loading="lazy" scrolling="no" allowtransparency="true" allow="autoplay; encrypted-media; picture-in-picture; clipboard-write" allowfullscreen></iframe>
+        </div>
+        <figcaption><a href="https://www.instagram.com/reel/DYDoONKvmYI/" target="_blank" rel="noopener">¿No carga? Ábrelo en Instagram</a></figcaption>
+      </figure>
+    </section>
   </main>
 
   <footer class="footer">
@@ -348,6 +357,13 @@
     <p class="footer-small">Activa el sonido 🔊 y toca los globos que flotan para reventarlos 🎈</p>
   </footer>
 
+
+  <!-- Foto ampliada -->
+  <dialog class="lightbox" id="photoDialog" aria-label="Foto">
+    <form method="dialog"><button class="lightbox-close" aria-label="Cerrar">×</button></form>
+    <img id="photoDialogImg" alt="">
+    <p class="lightbox-caption" id="photoDialogCap"></p>
+  </dialog>
 
   <!-- Gran revelación -->
   <div class="reveal-overlay" id="revealOverlay" role="dialog" aria-modal="true" aria-labelledby="revealTitle" hidden>
