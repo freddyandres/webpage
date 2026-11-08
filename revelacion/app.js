@@ -505,6 +505,72 @@
       noise(t + 2.1, 1.4, { type: "highpass", f: 6000, q: 0.3, v: 0.18 });
     }
 
+    /* Efectos y música de los juegos */
+    function sfx(name) {
+      if (!ready()) return;
+      var t = ctx.currentTime;
+      if (name === "catch") {
+        tone(880, t, 0.07, { type: "square", v: 0.05, lp: 3200 });
+        tone(1320, t + 0.05, 0.09, { type: "square", v: 0.045, lp: 3200 });
+      } else if (name === "gold") {
+        [84, 88, 91, 96].forEach(function (m, i) { bell(N(m), t + i * 0.05, 0.09, 0.5); });
+      } else if (name === "ouch") {
+        tone(420, t, 0.28, { type: "sawtooth", v: 0.07, to: 140, lp: 1400 });
+        noise(t, 0.08, { f: 700, v: 0.18 });
+      } else if (name === "level") {
+        [72, 76, 79, 84, 88].forEach(function (m, i) { tone(N(m), t + i * 0.07, 0.16, { type: "triangle", v: 0.13 }); });
+        bell(N(96), t + 0.38, 0.08, 0.7);
+      } else if (name === "over") {
+        [67, 64, 60, 55].forEach(function (m, i) { tone(N(m), t + i * 0.2, 0.26, { type: "triangle", v: 0.13 }); });
+      } else if (name === "start") {
+        [60, 64, 67, 72].forEach(function (m, i) { tone(N(m), t + i * 0.08, 0.12, { type: "square", v: 0.04, lp: 2600 }); });
+      } else if (name === "found") {
+        bell(N(84), t, 0.12, 0.6); bell(N(91), t + 0.07, 0.1, 0.6);
+      } else if (name === "wrong") {
+        tone(230, t, 0.13, { type: "square", v: 0.05, lp: 900 });
+        tone(180, t + 0.1, 0.16, { type: "square", v: 0.05, lp: 900 });
+      } else if (name === "win") {
+        fanfare("nina");
+      }
+    }
+    // Musiquita original estilo videojuego; se acelera con el nivel
+    var GMEL = [72, 76, 79, 76, 74, 77, 81, 77, 72, 76, 79, 84, 83, 79, 76, 74,
+                72, 76, 79, 76, 77, 81, 84, 81, 79, 77, 76, 74, 72, 0, 72, 0];
+    var GBASS = [48, 55, 50, 57, 48, 55, 43, 50, 48, 55, 53, 60, 55, 52, 48, 48];
+    var gameOn = false, gTimer = null, gGain = null, gNext = 0, gStep = 0, gTempo = 1;
+    function gSchedule() {
+      var dur = 0.15 / gTempo;
+      while (gNext < ctx.currentTime + 0.3) {
+        var m = GMEL[gStep % GMEL.length];
+        if (m) tone(N(m), gNext, dur * 0.9, { type: "square", v: 0.035, lp: 2200, dest: gGain });
+        if (gStep % 2 === 0) tone(N(GBASS[(gStep / 2) % GBASS.length]), gNext, dur * 1.6, { type: "triangle", v: 0.08, dest: gGain });
+        if (gStep % 4 === 2) noise(gNext, 0.03, { type: "highpass", f: 7000, v: 0.05 });
+        gNext += dur; gStep++;
+      }
+    }
+    function gameMusic(on) {
+      if (!on) {
+        gameOn = false;
+        if (gTimer) {
+          clearInterval(gTimer); gTimer = null;
+          var g = gGain, now = ctx.currentTime;
+          g.gain.setValueAtTime(g.gain.value, now);
+          g.gain.linearRampToValueAtTime(0, now + 0.3);
+          setTimeout(function () { g.disconnect(); }, 500);
+        }
+        startMusic();
+        return;
+      }
+      gameOn = true;
+      stopMusic();
+      if (!ready() || gTimer) return;
+      gGain = ctx.createGain(); gGain.gain.value = 1; gGain.connect(master);
+      gNext = ctx.currentTime + 0.1; gStep = 0;
+      gTimer = setInterval(gSchedule, 80);
+      gSchedule();
+    }
+    function gameTempo(x) { gTempo = Math.max(0.5, Math.min(2.2, x || 1)); }
+
     /* Música de fondo */
     function loadMusic() {
       if (musicBuf || musicLoading) return musicLoading;
@@ -517,7 +583,7 @@
         .catch(function () { musicLoading = null; });
       return musicLoading;
     }
-    function canPlayMusic() { return enabled && !live && !paused && !videoOn && !document.hidden; }
+    function canPlayMusic() { return enabled && !live && !paused && !videoOn && !gameOn && !document.hidden; }
     function startMusic() {
       if (!canPlayMusic() || musicSrc || !ensure()) return;
       wantMusic = true;
@@ -615,7 +681,7 @@
 
     function canSound() { return enabled && unlocked; }
 
-    return { init: init, pop: pop, chime: chime, drumroll: drumroll, fanfare: fanfare, setLive: setLive, pause: pause, video: video, canSound: canSound };
+    return { init: init, pop: pop, chime: chime, drumroll: drumroll, fanfare: fanfare, setLive: setLive, pause: pause, video: video, canSound: canSound, sfx: sfx, gameMusic: gameMusic, gameTempo: gameTempo };
   })();
 
   /* ---------------- Globos que suben (se pueden reventar) ---------------- */
