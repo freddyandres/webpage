@@ -364,6 +364,10 @@ h1.is-revealed small { font-family: var(--f-script); font-weight: 400; font-size
 .player-frame.meet-mode .player { aspect-ratio: auto; }
 .player-frame.meet-mode .placeholder { position: relative; inset: auto; min-height: 360px; padding: 30px 18px; }
 .ph-meet { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 16px; }
+.meet-notes { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; width: min(100%, 360px); text-align: left; }
+.meet-notes li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 16px; background: rgba(255,255,255,.88); box-shadow: 0 6px 16px -10px rgba(122,74,53,.45); font-size: .92rem; line-height: 1.35; color: var(--brown-deep); }
+.meet-notes b { font-size: 1.15rem; line-height: 1.2; }
+.meet-notes strong { color: var(--pink-ink); }
 .btn-meet {
   color: #fff; font-size: 1.08rem; padding: 14px 24px;
   background: linear-gradient(135deg, #1a8f5b, #2fb47a);
