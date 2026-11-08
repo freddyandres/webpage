@@ -963,9 +963,11 @@
     var nN = 0, nG = 0;
     box.innerHTML = "";
     list.forEach(function (f, i) {
-      var t = normTeam(f.team) || "nino";
-      if (t === "nino") nN++; else nG++;
-      var label = t === "nino" ? "Team Niño 💙" : "Team Niña 💗";
+      // "dividido": foto con gente de los dos equipos (cuenta uno para cada lado)
+      var mix = /^(dividido|ambos|mixto)$/i.test(String(f.team || "").trim());
+      var t = mix ? "mix" : (normTeam(f.team) || "nino");
+      if (t === "nino") nN++; else if (t === "nina") nG++; else { nN++; nG++; }
+      var label = t === "nino" ? "Team Niño 💙" : t === "nina" ? "Team Niña 💗" : "Team dividido 💗💙";
 
       var b = document.createElement("button");
       b.type = "button";
