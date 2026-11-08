@@ -107,7 +107,7 @@
   ];
   var audio = $('audio'), wave = $('wave'), cap = $('caption'), mini = $('mini'), miniCap = $('mini-cap'), miniBar = $('mini-bar');
   var toggles = document.querySelectorAll('[data-audio-toggle]');
-  wave.innerHTML = PEAKS.map(function (v) { return '<i style="height:' + Math.round(v * 100) + '%"></i>'; }).join('');
+  PEAKS.forEach(function (v) { var bar = document.createElement('i'); bar.style.height = Math.round(v * 100) + '%'; wave.appendChild(bar); });
   var bars = wave.children, lastCue = -1;
   function setPlaying(on) {
     toggles.forEach(function (b) { b.classList.toggle('is-playing', on); });
