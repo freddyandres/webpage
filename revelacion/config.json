@@ -44,6 +44,11 @@
       "foto": "assets/team/07.jpg",
       "team": "niño",
       "nombre": "Tío Julián"
+    },
+    {
+      "foto": "assets/team/08.jpg",
+      "team": "niño",
+      "nombre": "Julieth"
     }
   ]
 }
