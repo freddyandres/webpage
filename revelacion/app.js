@@ -899,6 +899,7 @@
       var t = normTeam(f.team) || "nino";
       if (t === "nino") nN++; else nG++;
       var label = t === "nino" ? "Team Niño 💙" : "Team Niña 💗";
+      if (f.nombre) label = String(f.nombre) + " · " + label;
       var b = document.createElement("button");
       b.type = "button";
       b.className = "g-item " + t;
