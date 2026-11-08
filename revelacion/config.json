@@ -54,6 +54,11 @@
       "foto": "assets/team/09.jpg",
       "team": "niña",
       "nombre": "Tíos Pao y Chris"
+    },
+    {
+      "foto": "assets/team/10.jpg",
+      "team": "niña",
+      "nombre": "Abuela Teresa"
     }
   ]
 }
