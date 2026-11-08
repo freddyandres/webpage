@@ -132,12 +132,14 @@
   }
 
   /* ================= Juego 2: ¿Cuánto sabes del bebé? ================= */
+  // Cada opción es [código, texto]. El código es el que se guarda en la base de datos,
+  // así se puede cambiar el orden en pantalla sin mezclar las respuestas ya dadas.
   var PREGUNTAS = [
-    { q: "¿A quién se parecerá?", o: ["A mamá 👩", "A papá 👨", "Mitad y mitad 💞", "A los abuelos 👵👴", "A la hermanita 👧"] },
-    { q: "¿Quién será más dormilón?", o: ["El bebé 😴", "Mamá 🛌", "Papá 💤", "La hermanita 😪"] },
-    { q: "¿Nacerá con mucho cabello?", o: ["¡Muchísimo! 🦁", "Poquito 🌱", "Calvito 🥚"] },
-    { q: "¿Será tranquilo o inquieto?", o: ["Tranquilito 😇", "Inquieto 🤸", "Un torbellino 🌪️"] },
-    { q: "¿Quién lo consentirá más?", o: ["Mamá 💗", "Papá 💙", "Los abuelos 🧓", "La hermanita 👧"] }
+    { q: "¿A quién se parecerá?", o: [[1, "A papá 👨"], [0, "A mamá 👩"], [4, "A la hermanita 👧"], [2, "Mitad y mitad 💞"], [3, "A los abuelos 👵👴"]] },
+    { q: "¿Quién será más dormilón?", o: [[2, "Papá 💤"], [1, "Mamá 🛌"], [3, "La hermanita 😪"], [0, "El bebé 😴"]] },
+    { q: "¿Nacerá con mucho cabello?", o: [[0, "¡Muchísimo! 🦁"], [1, "Poquito 🌱"], [2, "Calvito 🥚"]] },
+    { q: "¿Será tranquilo o inquieto?", o: [[0, "Tranquilito 😇"], [1, "Inquieto 🤸"], [2, "Un torbellino 🌪️"]] },
+    { q: "¿Quién lo consentirá más?", o: [[1, "Papá 💙"], [0, "Mamá 💗"], [3, "La hermanita 👧"], [2, "Los abuelos 🧓"]] }
   ];
   function initTrivia() {
     var box = $("#triviaBox");
@@ -155,13 +157,13 @@
     }
     function bars(qi, mine) {
       var c = counts(qi), tot = 0, wrap = el("div", "t-bars");
-      PREGUNTAS[qi].o.forEach(function (_, k) { tot += Number(c[k] || 0); });
-      PREGUNTAS[qi].o.forEach(function (opt, k) {
-        var n = Number(c[k] || 0), pct = tot ? Math.round(n * 100 / tot) : 0;
+      PREGUNTAS[qi].o.forEach(function (op) { tot += Number(c[op[0]] || 0); });
+      PREGUNTAS[qi].o.forEach(function (op) {
+        var k = op[0], n = Number(c[k] || 0), pct = tot ? Math.round(n * 100 / tot) : 0;
         var row = el("div", "t-bar" + (k === mine ? " mine" : ""));
         var fill = el("span", "t-fill"); fill.style.width = pct + "%";
         row.appendChild(fill);
-        row.appendChild(el("span", "t-label", opt));
+        row.appendChild(el("span", "t-label", op[1]));
         row.appendChild(el("span", "t-pct", pct + "%"));
         wrap.appendChild(row);
       });
@@ -174,10 +176,10 @@
       box.appendChild(el("p", "t-progress", "Pregunta " + (idx + 1) + " de " + PREGUNTAS.length + " · " + points + " puntos"));
       box.appendChild(el("h3", "t-q", q.q));
       var opts = el("div", "t-opts");
-      q.o.forEach(function (text, k) {
-        var b = el("button", "t-opt", text);
+      q.o.forEach(function (op) {
+        var b = el("button", "t-opt", op[1]);
         b.type = "button";
-        b.addEventListener("click", function () { choose(k, b); });
+        b.addEventListener("click", function () { choose(op[0], b); });
         opts.appendChild(b);
       });
       box.appendChild(opts);
