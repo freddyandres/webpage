@@ -496,6 +496,8 @@ h1.is-revealed small { font-family: var(--f-script); font-weight: 400; font-size
 .g-item:nth-child(even) { transform: rotate(1.2deg); }
 .g-item:hover { transform: rotate(0) scale(1.02); }
 .g-item img { width: 100%; height: auto; border-radius: 12px; }
+.g-name { display: block; margin-top: 8px; font-family: var(--f-script); font-size: 1.1rem; line-height: 1.2; color: var(--brown-deep); }
+.g-name + .g-chip { margin-top: 4px; }
 .g-chip { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; padding: 3px 11px; border-radius: 999px; font-family: var(--f-head); font-weight: 600; font-size: .85rem; color: #fff; }
 .g-item.nino .g-chip { background: var(--blue-deep); }
 .g-item.nina .g-chip { background: var(--pink-deep); }
