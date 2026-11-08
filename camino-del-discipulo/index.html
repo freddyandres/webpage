@@ -4,189 +4,354 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>El Camino del Discípulo · Ya disponible en Amazon</title>
-  <meta name="description" content="El Camino del Discípulo: un libro para crecer en tu relación con Dios, desde los fundamentos de la vida cristiana hasta una fe madura, firme y perseverante. Ya disponible en Amazon.">
-  <meta name="theme-color" content="#14213d">
+  <meta name="description" content="El Camino del Discípulo: un libro para crecer en tu relación con Dios, desde los fundamentos de la vida cristiana hasta una fe madura, firme y perseverante. Mira el tráiler y consíguelo en Amazon.">
+  <meta name="theme-color" content="#0b1429">
 
   <meta property="og:type" content="book">
   <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="El Camino del Discípulo">
   <meta property="og:title" content="📖 El Camino del Discípulo · Ya disponible en Amazon">
-  <meta property="og:description" content="Desde los fundamentos de la vida cristiana hasta una fe madura, firme y perseverante. No basta con comenzar: el desafío es permanecer fieles a Cristo hasta el final.">
+  <meta property="og:description" content="Desde los fundamentos de la vida cristiana hasta una fe madura, firme y perseverante. Mira el tráiler y consíguelo en Amazon.">
   <meta property="og:url" content="https://elcaminodeldiscipulo.vercel.app/">
   <meta property="og:image" content="https://elcaminodeldiscipulo.vercel.app/assets/og.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="El Camino del Discípulo — ya disponible en Amazon">
+  <meta property="og:video" content="https://elcaminodeldiscipulo.vercel.app/assets/media/trailer.mp4">
+  <meta property="og:video:type" content="video/mp4">
+  <meta property="og:video:width" content="1280">
+  <meta property="og:video:height" content="720">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" as="image" href="assets/portada.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip" href="#libro">Saltar al contenido</a>
 
-  <header class="nav">
-    <a class="nav__brand" href="#inicio">El Camino del Discípulo</a>
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#inicio" aria-label="Inicio">
+      <img src="assets/favicon.svg" alt="" width="28" height="28">
+      <span>El Camino del Discípulo</span>
+    </a>
     <nav class="nav__links" aria-label="Secciones">
+      <a href="#trailer">Tráiler</a>
       <a href="#libro">El libro</a>
       <a href="#camino">El camino</a>
       <a href="#resena">Reseñas</a>
+      <a href="#kit">Compartir</a>
     </nav>
-    <a class="btn btn--gold btn--sm amazon-link" href="https://a.co/d/0g59LLnk" target="_blank" rel="noopener">Comprar</a>
+    <a class="btn btn--gold btn--sm" href="https://a.co/d/0g59LLnk" target="_blank" rel="noopener">Comprar en Amazon</a>
   </header>
 
   <main>
-    <!-- Portada -->
+    <!-- ============ PORTADA ============ -->
     <section class="hero" id="inicio">
-      <div class="hero__glow" aria-hidden="true"></div>
+      <canvas class="hero__dust" id="dust" aria-hidden="true"></canvas>
+      <div class="hero__rays" aria-hidden="true"></div>
       <div class="hero__inner">
         <div class="hero__text">
-          <p class="eyebrow">✦ Ya disponible en Amazon</p>
-          <h1>El Camino<br><span>del Discípulo</span></h1>
-          <p class="lead">Un libro para quienes desean crecer en su relación con Dios y fortalecer su fe: desde los fundamentos de la vida cristiana hasta una fe madura, firme y perseverante.</p>
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Ya disponible en Amazon</p>
+          <h1>El Camino<br><em>del Discípulo</em></h1>
+          <p class="lead">Un libro para quienes desean crecer en su relación con Dios y fortalecer su fe: desde los fundamentos de la vida cristiana hasta una fe <strong>madura, firme y perseverante</strong>.</p>
           <div class="hero__actions">
-            <a class="btn btn--gold amazon-link" href="https://a.co/d/0g59LLnk" target="_blank" rel="noopener">
+            <a class="btn btn--gold btn--lg" href="https://a.co/d/0g59LLnk" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14Zm0 0A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
-              Conseguir el libro en Amazon
+              Conseguir el libro
             </a>
-            <a class="btn btn--ghost" href="#resena">Dejar una reseña</a>
+            <a class="btn btn--glass btn--lg" href="#trailer" data-play-trailer>
+              <span class="play-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+              Ver el tráiler
+            </a>
           </div>
-          <p class="hero__note">Edición en español · Amazon USA</p>
+          <button class="listen" type="button" data-audio-toggle aria-label="Escuchar la presentación narrada del libro">
+            <span class="listen__icon" aria-hidden="true">
+              <svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+            </span>
+            <span class="listen__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="listen__text">Escuchar la presentación · 0:39</span>
+          </button>
         </div>
 
-        <div class="book" aria-label="Portada ilustrativa del libro El Camino del Discípulo">
-          <div class="book__cover">
-            <svg class="book__art" viewBox="0 0 200 260" aria-hidden="true">
-              <defs>
-                <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="#f6d58e"/><stop offset="1" stop-color="#c99a3e"/>
-                </linearGradient>
-              </defs>
-              <circle cx="100" cy="112" r="34" fill="url(#sun)" opacity=".95"/>
-              <g stroke="#e9c77a" stroke-width="1.2" opacity=".55">
-                <line x1="138" y1="80" x2="151" y2="68"/><line x1="62" y1="80" x2="49" y2="68"/>
-                <line x1="154" y1="112" x2="172" y2="112"/><line x1="46" y1="112" x2="28" y2="112"/>
-              </g>
-              <path d="M0 150 Q50 128 100 140 T200 136 V260 H0Z" fill="#1e2f55"/>
-              <path d="M0 170 Q60 150 110 162 T200 160 V260 H0Z" fill="#182746"/>
-              <path d="M92 260 C96 220 104 196 100 146 C99 196 108 220 128 260Z" fill="#e8d3a3" opacity=".9"/>
-              <rect x="97.5" y="124" width="5" height="22" rx="1" fill="#f8ecd0"/>
-              <rect x="90" y="130" width="20" height="4.5" rx="1" fill="#f8ecd0"/>
-            </svg>
-            <div class="book__title">
-              <small>EL CAMINO</small>
-              <strong>DEL DISCÍPULO</strong>
+        <div class="hero__book">
+          <div class="book3d" id="book3d">
+            <div class="book3d__inner">
+              <img class="book3d__cover" src="assets/portada.jpg" width="900" height="1305" alt="Portada ilustrativa del libro El Camino del Discípulo: un camino que sube a una montaña con una cruz al amanecer">
+              <div class="book3d__pages" aria-hidden="true"></div>
+              <div class="book3d__shine" aria-hidden="true"></div>
             </div>
+            <div class="book3d__shadow" aria-hidden="true"></div>
           </div>
-          <div class="book__pages" aria-hidden="true"></div>
         </div>
       </div>
-      <a class="scroll-cue" href="#libro" aria-label="Bajar a la sección El libro">↓</a>
+      <a class="scroll-cue" href="#trailer" aria-label="Bajar al tráiler"><span></span></a>
     </section>
 
-    <!-- Sobre el libro -->
-    <section class="section paper" id="libro">
-      <div class="wrap two-col">
-        <div>
+    <!-- ============ CINTA ============ -->
+    <div class="ribbon" aria-hidden="true">
+      <div class="ribbon__track">
+        <span>Fundamentos</span><b>✦</b><span>Crecimiento</span><b>✦</b><span>Madurez</span><b>✦</b><span>Perseverancia</span><b>✦</b><span>Sagradas Escrituras</span><b>✦</b>
+        <span>Fundamentos</span><b>✦</b><span>Crecimiento</span><b>✦</b><span>Madurez</span><b>✦</b><span>Perseverancia</span><b>✦</b><span>Sagradas Escrituras</span><b>✦</b>
+      </div>
+    </div>
+
+    <!-- ============ TRÁILER ============ -->
+    <section class="section section--dark" id="trailer">
+      <div class="wrap">
+        <header class="head center">
+          <p class="eyebrow">Tráiler oficial</p>
+          <h2>Un camino que no termina en el primer paso</h2>
+        </header>
+        <figure class="player" id="player">
+          <video id="video" preload="metadata" playsinline poster="assets/media/trailer-poster.jpg">
+            <source src="assets/media/trailer.mp4" type="video/mp4">
+          </video>
+          <button class="player__big" id="video-big" type="button" aria-label="Reproducir el tráiler">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <figcaption class="player__bar">
+            <span>Tráiler narrado · 41 s · con subtítulos</span>
+            <a href="assets/media/trailer-vertical.mp4" download="El-Camino-del-Discipulo-trailer-vertical.mp4">Descargar versión vertical para estados ↓</a>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ SOBRE EL LIBRO ============ -->
+    <section class="section" id="libro">
+      <div class="wrap about">
+        <div class="about__text">
           <p class="eyebrow eyebrow--dark">Sobre el libro</p>
           <h2>Una guía para recorrer la vida cristiana, paso a paso</h2>
-        </div>
-        <div class="prose">
           <p><em>El Camino del Discípulo</em> nace de mucho tiempo de oración y trabajo. Está pensado para quienes desean crecer en su relación con Dios y fortalecer su fe.</p>
           <p>A lo largo de sus capítulos, recorre el camino del discípulo desde los fundamentos de la vida cristiana hasta una fe madura, firme y perseverante, siempre basada en la enseñanza de las <strong>Sagradas Escrituras</strong>.</p>
           <ul class="checks">
-            <li>Para quien está dando sus primeros pasos en la fe.</li>
-            <li>Para quien quiere afirmar sus raíces y madurar.</li>
-            <li>Para grupos, células y estudios bíblicos que acompañan a otros.</li>
+            <li><span>01</span>Para quien está dando sus primeros pasos en la fe.</li>
+            <li><span>02</span>Para quien quiere afirmar sus raíces y madurar.</li>
+            <li><span>03</span>Para quien desea permanecer firme hasta el final.</li>
           </ul>
+        </div>
+
+        <aside class="audio-card" aria-label="Presentación narrada">
+          <div class="audio-card__top">
+            <img src="assets/portada.jpg" alt="" width="72" height="104" loading="lazy">
+            <div>
+              <p class="audio-card__kicker">Presentación narrada</p>
+              <p class="audio-card__title">El Camino del Discípulo</p>
+              <p class="audio-card__meta">Audio · 0:39</p>
+            </div>
+          </div>
+          <div class="wave" id="wave" role="slider" tabindex="0" aria-label="Posición del audio" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+          <div class="audio-card__controls">
+            <span class="time" id="t-cur">0:00</span>
+            <button class="round" type="button" data-audio-toggle aria-label="Reproducir o pausar la presentación">
+              <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+            </button>
+            <span class="time" id="t-dur">0:39</span>
+          </div>
+          <p class="audio-card__caption" id="caption" aria-live="off">Toca reproducir para escuchar.</p>
+          <audio id="audio" preload="none" src="assets/media/narracion.mp3"></audio>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ CITA ============ -->
+    <section class="quote" id="corazon">
+      <div class="quote__bg" aria-hidden="true"></div>
+      <div class="wrap">
+        <p class="eyebrow center">El corazón del libro</p>
+        <blockquote>
+          <p>No basta con comenzar la vida cristiana; el verdadero desafío es <em>permanecer fieles a Cristo hasta el final.</em></p>
+        </blockquote>
+        <div class="verse">
+          <p>«Si vosotros permaneciereis en mi palabra, seréis verdaderamente mis discípulos.»</p>
+          <cite>Juan 8:31</cite>
         </div>
       </div>
     </section>
 
-    <!-- Cita central -->
-    <section class="quote">
+    <!-- ============ EL CAMINO ============ -->
+    <section class="section" id="camino">
       <div class="wrap">
-        <blockquote>
-          <p>«No basta con comenzar la vida cristiana; el verdadero desafío es permanecer fieles a Cristo hasta el final.»</p>
-          <footer>Ese es el corazón de este libro</footer>
-        </blockquote>
-        <p class="verse">«El que persevere hasta el fin, este será salvo.» <span>— Mateo 24:13</span></p>
+        <header class="head center">
+          <p class="eyebrow eyebrow--dark">El recorrido</p>
+          <h2>Del primer paso a una fe que permanece</h2>
+          <p class="sub">Cuatro etapas del discípulo, cada una a la luz de la Palabra.</p>
+        </header>
+        <div class="journey" id="journey">
+          <div class="journey__line" aria-hidden="true"><i id="journey-fill"></i></div>
+          <ol class="journey__list">
+          <li class="stage">
+            <div class="stage__marker">1</div>
+            <div class="stage__card">
+              <p class="stage__kicker">Etapa uno</p>
+              <h3>Fundamentos</h3>
+              <p>Las bases de la vida cristiana: conocer a Cristo y edificar sobre la roca de su Palabra.</p>
+              <blockquote>«Cualquiera, pues, que me oye estas palabras, y las hace, le compararé a un hombre prudente, que edificó su casa sobre la roca.» <cite>Mateo 7:24</cite></blockquote>
+            </div>
+          </li>
+          <li class="stage">
+            <div class="stage__marker">2</div>
+            <div class="stage__card">
+              <p class="stage__kicker">Etapa dos</p>
+              <h3>Crecimiento</h3>
+              <p>Una relación con Dios que se profundiza día a día y da fruto en la vida diaria.</p>
+              <blockquote>«Antes bien, creced en la gracia y el conocimiento de nuestro Señor y Salvador Jesucristo.» <cite>2 Pedro 3:18</cite></blockquote>
+            </div>
+          </li>
+          <li class="stage">
+            <div class="stage__marker">3</div>
+            <div class="stage__card">
+              <p class="stage__kicker">Etapa tres</p>
+              <h3>Madurez</h3>
+              <p>Una fe firme, arraigada en Cristo, que no se mueve con cada viento.</p>
+              <blockquote>«Arraigados y sobreedificados en él, y confirmados en la fe, así como habéis sido enseñados.» <cite>Colosenses 2:7</cite></blockquote>
+            </div>
+          </li>
+          <li class="stage">
+            <div class="stage__marker">4</div>
+            <div class="stage__card">
+              <p class="stage__kicker">Etapa cuatro</p>
+              <h3>Perseverancia</h3>
+              <p>Permanecer fieles a Cristo hasta el final: el verdadero desafío del discípulo.</p>
+              <blockquote>«He peleado la buena batalla, he acabado la carrera, he guardado la fe.» <cite>2 Timoteo 4:7</cite></blockquote>
+            </div>
+          </li>
+          </ol>
+        </div>
+        <div class="center cta-inline">
+          <a class="btn btn--ink btn--lg" href="https://a.co/d/0g59LLnk" target="_blank" rel="noopener">Empieza el camino · Ver en Amazon</a>
+        </div>
       </div>
     </section>
 
-    <!-- El camino -->
-    <section class="section paper" id="camino">
-      <div class="wrap">
-        <p class="eyebrow eyebrow--dark center">El recorrido</p>
-        <h2 class="center">Del primer paso a una fe que permanece</h2>
-        <ol class="path">
-          <li class="path__step">
-            <span class="path__num">1</span>
-            <h3>Fundamentos</h3>
-            <p>Las bases de la vida cristiana: conocer a Cristo y edificar sobre la roca de su Palabra.</p>
-          </li>
-          <li class="path__step">
-            <span class="path__num">2</span>
-            <h3>Crecimiento</h3>
-            <p>Una relación con Dios que se profundiza día a día y da fruto en la vida diaria.</p>
-          </li>
-          <li class="path__step">
-            <span class="path__num">3</span>
-            <h3>Madurez</h3>
-            <p>Una fe firme, que no se mueve con cada viento y que sirve y acompaña a otros.</p>
-          </li>
-          <li class="path__step">
-            <span class="path__num">4</span>
-            <h3>Perseverancia</h3>
-            <p>Permanecer fieles a Cristo hasta el final: el verdadero desafío del discípulo.</p>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- Reseña -->
-    <section class="section review" id="resena">
+    <!-- ============ RESEÑA ============ -->
+    <section class="section section--dark review" id="resena">
       <div class="wrap review__inner">
-        <div>
+        <div class="review__intro">
           <p class="eyebrow">Un favor muy especial</p>
           <h2>Tu reseña puede llevar este libro a nuevas manos</h2>
           <p class="lead lead--sm">Si ya lo estás leyendo o lo terminaste, dedicar un par de minutos a dejar una reseña en Amazon ayuda a que otras personas, que nunca han oído hablar del libro, se animen a leerlo. Para un autor que empieza, esas reseñas marcan una diferencia enorme.</p>
+          <div class="stars" id="stars" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
         </div>
         <ol class="steps">
           <li><strong>Abre el libro en Amazon</strong><span>Usa el botón de abajo e inicia sesión en tu cuenta.</span></li>
           <li><strong>Baja hasta «Opiniones de clientes»</strong><span>Toca «Escribir una opinión» («Write a customer review»).</span></li>
           <li><strong>Califica y cuenta tu experiencia</strong><span>Unas pocas líneas sinceras bastan: qué te dejó y a quién se lo recomendarías.</span></li>
+          <li class="steps__cta"><a class="btn btn--gold btn--lg" href="https://a.co/d/0g59LLnk" target="_blank" rel="noopener">★ Dejar mi reseña en Amazon</a></li>
         </ol>
-        <div class="review__actions">
-          <a class="btn btn--gold amazon-link" href="https://a.co/d/0g59LLnk" target="_blank" rel="noopener">★ Dejar mi reseña en Amazon</a>
+      </div>
+    </section>
+
+    <!-- ============ KIT PARA COMPARTIR ============ -->
+    <section class="section" id="kit">
+      <div class="wrap">
+        <header class="head center">
+          <p class="eyebrow eyebrow--dark">Kit para compartir</p>
+          <h2>Ayúdanos a que llegue a más personas</h2>
+          <p class="sub">Descarga las imágenes, el video y el audio, y compártelos en tus estados, redes o grupos.</p>
+        </header>
+
+        <div class="kit">
+          <a class="kit__item kit__item--tall" href="assets/kit/historia.jpg" download="El-Camino-del-Discipulo-historia.jpg">
+            <img src="assets/kit/historia.jpg" alt="Imagen vertical para estados: portada del libro y el texto Ya disponible en Amazon" loading="lazy" width="1080" height="1920">
+            <span class="kit__label"><b>Historia / estado</b> 1080×1920 · Descargar</span>
+          </a>
+          <a class="kit__item" href="assets/kit/publicacion.jpg" download="El-Camino-del-Discipulo-publicacion.jpg">
+            <img src="assets/kit/publicacion.jpg" alt="Imagen cuadrada para publicaciones con la portada del libro" loading="lazy" width="1080" height="1080">
+            <span class="kit__label"><b>Publicación</b> 1080×1080 · Descargar</span>
+          </a>
+          <a class="kit__item" href="assets/kit/resena.jpg" download="El-Camino-del-Discipulo-resena.jpg">
+            <img src="assets/kit/resena.jpg" alt="Imagen que invita a dejar una reseña en Amazon" loading="lazy" width="1080" height="1080">
+            <span class="kit__label"><b>Invitación a reseñar</b> 1080×1080 · Descargar</span>
+          </a>
+          <a class="kit__item" href="assets/kit/fundamentos.jpg" download="Versiculo-1-Fundamentos.jpg">
+            <img src="assets/kit/fundamentos.jpg" alt="Tarjeta con Mateo 7:24" loading="lazy" width="1080" height="1080">
+            <span class="kit__label"><b>Versículo · Fundamentos</b> Descargar</span>
+          </a>
+          <a class="kit__item" href="assets/kit/crecimiento.jpg" download="Versiculo-2-Crecimiento.jpg">
+            <img src="assets/kit/crecimiento.jpg" alt="Tarjeta con 2 Pedro 3:18" loading="lazy" width="1080" height="1080">
+            <span class="kit__label"><b>Versículo · Crecimiento</b> Descargar</span>
+          </a>
+          <a class="kit__item" href="assets/kit/madurez.jpg" download="Versiculo-3-Madurez.jpg">
+            <img src="assets/kit/madurez.jpg" alt="Tarjeta con Colosenses 2:7" loading="lazy" width="1080" height="1080">
+            <span class="kit__label"><b>Versículo · Madurez</b> Descargar</span>
+          </a>
+          <a class="kit__item" href="assets/kit/perseverancia.jpg" download="Versiculo-4-Perseverancia.jpg">
+            <img src="assets/kit/perseverancia.jpg" alt="Tarjeta con 2 Timoteo 4:7" loading="lazy" width="1080" height="1080">
+            <span class="kit__label"><b>Versículo · Perseverancia</b> Descargar</span>
+          </a>
+        </div>
+
+        <div class="kit-files">
+          <a class="file" href="assets/media/trailer-vertical.mp4" download="El-Camino-del-Discipulo-trailer-vertical.mp4">
+            <span class="file__icon" aria-hidden="true">▶</span><span><b>Tráiler vertical</b><small>MP4 · 1080×1920 · para estados y Reels</small></span>
+          </a>
+          <a class="file" href="assets/media/trailer.mp4" download="El-Camino-del-Discipulo-trailer.mp4">
+            <span class="file__icon" aria-hidden="true">▶</span><span><b>Tráiler horizontal</b><small>MP4 · 1280×720 · para YouTube o Facebook</small></span>
+          </a>
+          <a class="file" href="assets/media/narracion.mp3" download="El-Camino-del-Discipulo-presentacion.mp3">
+            <span class="file__icon" aria-hidden="true">♪</span><span><b>Presentación en audio</b><small>MP3 · 0:39 · para notas de voz</small></span>
+          </a>
+          <a class="file" href="assets/kit/codigo-qr.png" download="El-Camino-del-Discipulo-QR.png">
+            <span class="file__icon file__icon--qr" aria-hidden="true"><img src="assets/kit/codigo-qr.png" alt="" width="40" height="40" loading="lazy"></span><span><b>Código QR</b><small>PNG · para imprimir en volantes o en la iglesia</small></span>
+          </a>
+        </div>
+
+        <div class="share">
+          <h3>O comparte esta página directamente</h3>
+          <div class="share__buttons">
+            <a class="btn btn--wa" id="share-wa" href="https://wa.me/" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.2 17.3L2 22l4.8-1.2A11 11 0 0 0 20.5 3.5ZM12 20a8.9 8.9 0 0 1-4.6-1.3l-.3-.2-2.8.7.8-2.7-.2-.3A9 9 0 1 1 12 20Zm4.9-6.7c-.3-.1-1.6-.8-1.8-.9s-.4-.1-.6.1-.7.9-.8 1.1-.3.2-.6.1a7.3 7.3 0 0 1-3.6-3.2c-.3-.5.3-.4.8-1.4a.5.5 0 0 0 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z"/></svg>
+              WhatsApp
+            </a>
+            <a class="btn btn--fb" id="share-fb" href="https://www.facebook.com/sharer/sharer.php" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v8h4v-8h3l1-4h-4V8.5c0-.3.2-.5.5-.5Z"/></svg>
+              Facebook
+            </a>
+            <button class="btn btn--outline" id="share-copy" type="button">Copiar enlace</button>
+            <button class="btn btn--outline" id="share-native" type="button" hidden>Más opciones…</button>
+          </div>
+          <p class="share__status" id="share-status" role="status" aria-live="polite"></p>
         </div>
       </div>
     </section>
 
-    <!-- Compartir -->
-    <section class="section paper" id="compartir">
-      <div class="wrap share">
-        <h2>¿Conoces a alguien a quien le haría bien?</h2>
-        <p>Compártele esta página. Un mensaje tuyo puede ser la invitación que necesita.</p>
-        <div class="share__buttons">
-          <a class="btn btn--wa" id="share-wa" href="https://wa.me/?text=" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.2 17.3L2 22l4.8-1.2A11 11 0 0 0 20.5 3.5ZM12 20a8.9 8.9 0 0 1-4.6-1.3l-.3-.2-2.8.7.8-2.7-.2-.3A9 9 0 1 1 12 20Zm4.9-6.7c-.3-.1-1.6-.8-1.8-.9s-.4-.1-.6.1-.7.9-.8 1.1-.3.2-.6.1a7.3 7.3 0 0 1-3.6-3.2c-.3-.5.3-.4.8-1.4a.5.5 0 0 0 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z"/></svg>
-            Compartir por WhatsApp
-          </a>
-          <button class="btn btn--outline" id="share-copy" type="button">Copiar enlace</button>
-          <button class="btn btn--outline" id="share-native" type="button" hidden>Compartir…</button>
+    <!-- ============ CIERRE ============ -->
+    <section class="closing">
+      <div class="wrap closing__inner">
+        <img src="assets/portada.jpg" alt="" width="180" height="261" loading="lazy">
+        <div>
+          <h2>Que este libro llegue a tus manos</h2>
+          <p>Y si te bendice, compártelo: tu recomendación puede ser la invitación que otra persona necesita.</p>
+          <a class="btn btn--gold btn--lg" href="https://a.co/d/0g59LLnk" target="_blank" rel="noopener">Conseguir El Camino del Discípulo</a>
         </div>
-        <p class="share__status" id="share-status" role="status" aria-live="polite"></p>
       </div>
     </section>
   </main>
 
   <footer class="foot">
     <p class="foot__title">El Camino del Discípulo</p>
-    <p>Disponible en Amazon · <a class="amazon-link" href="https://a.co/d/0g59LLnk" target="_blank" rel="noopener">a.co/d/0g59LLnk</a></p>
+    <p>Disponible en Amazon · <a href="https://a.co/d/0g59LLnk" target="_blank" rel="noopener">a.co/d/0g59LLnk</a></p>
+    <p class="foot__small">Citas bíblicas: Reina-Valera 1960. Portada e imágenes ilustrativas del portal.</p>
     <p class="foot__bless">Gracias por tu amistad y tu apoyo. ¡Dios te bendiga!</p>
   </footer>
+
+  <!-- Mini reproductor flotante -->
+  <div class="mini" id="mini" hidden>
+    <button class="round round--sm" type="button" data-audio-toggle aria-label="Reproducir o pausar la presentación">
+      <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+    </button>
+    <div class="mini__text"><b>Presentación narrada</b><span id="mini-cap">El Camino del Discípulo</span></div>
+    <div class="mini__progress"><i id="mini-bar"></i></div>
+  </div>
 
   <script src="app.js"></script>
 </body>

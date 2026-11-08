@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<link rel="stylesheet" href="common.css">
+<style>
+  html,body{overflow:hidden}
+  #stage{position:relative;overflow:hidden;background:#0b1429;color:#f6e3b4;font-family:var(--serif)}
+  .scene{position:absolute;inset:0;opacity:0;will-change:opacity,transform}
+  .full{position:absolute;inset:0;width:100%;height:100%}
+  .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  #sub{position:absolute;left:6%;right:6%;bottom:var(--subB);text-align:center;font:500 calc(var(--u)*4.6)/1.3 var(--serif);color:#fff;
+       text-shadow:0 2px calc(var(--u)*2) rgba(0,0,0,.85),0 0 calc(var(--u)*.6) rgba(0,0,0,.6);opacity:0}
+  #sub em{color:var(--gold-2);font-style:italic}
+  .label{font:600 calc(var(--u)*2.1)/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--gold-2)}
+  .big{font:700 calc(var(--u)*11)/1.02 var(--serif);color:#fff}
+  .big i{font-weight:600;color:var(--gold-2)}
+  .gold-line{height:2px;background:linear-gradient(90deg,transparent,var(--gold-2),transparent);margin:calc(var(--u)*3) auto}
+  #dust{position:absolute;inset:0;pointer-events:none}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55));pointer-events:none}
+  .stage-node text{font-family:var(--sans);font-weight:600}
+</style></head>
+<body>
+<div id="stage">
+  <!-- 1 · Amanecer: el primer paso -->
+  <div class="scene" id="s1">
+    <svg class="full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="s1sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1429"/><stop offset=".55" stop-color="#26396a"/><stop offset=".78" stop-color="#c98f52" id="s1hz"/><stop offset="1" stop-color="#0b1429"/></linearGradient>
+        <radialGradient id="s1sun"><stop offset="0" stop-color="#fff6dc"/><stop offset=".3" stop-color="#f6d58e"/><stop offset="1" stop-color="#f6d58e" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect width="1000" height="1000" fill="url(#s1sky)"/>
+      <circle id="s1s" cx="500" cy="640" r="240" fill="url(#s1sun)"/>
+      <path d="M0 610 Q250 570 500 600 T1000 590 V1000 H0Z" fill="#1a2b52"/>
+      <path d="M0 680 Q300 650 520 675 T1000 668 V1000 H0Z" fill="#111d38"/>
+      <path id="s1p" d="M470 820 C420 760 580 735 520 700 C470 672 535 640 506 618 C498 610 500 604 500 600"
+            fill="none" stroke="#f6e3b4" stroke-width="16" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" opacity=".9"/>
+    </svg>
+  </div>
+
+  <!-- 2 · Oración y trabajo: el libro abierto -->
+  <div class="scene" id="s2">
+    <svg class="full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="s2bg" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#2a3f6e"/><stop offset="1" stop-color="#0b1429"/></radialGradient>
+        <linearGradient id="s2beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e3b4" stop-opacity="0"/><stop offset="1" stop-color="#f6c76e" stop-opacity=".45"/></linearGradient>
+        <linearGradient id="s2page" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#efe2c4"/><stop offset="1" stop-color="#fffaf0"/></linearGradient>
+        <linearGradient id="s2page2" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#efe2c4"/><stop offset="1" stop-color="#fffaf0"/></linearGradient>
+      </defs>
+      <rect width="1000" height="1000" fill="url(#s2bg)"/>
+      <path id="s2b" d="M450 150 L550 150 L720 560 L280 560Z" fill="url(#s2beam)" opacity="0" style="mix-blend-mode:screen"/>
+      <g id="s2book" transform="translate(500 590) scale(.9)">
+        <ellipse cx="0" cy="70" rx="300" ry="30" fill="#000" opacity=".35"/>
+        <path d="M0 -10 C-90 -55 -200 -50 -280 -20 L-280 60 C-200 30 -90 25 0 70Z" fill="url(#s2page)"/>
+        <path d="M0 -10 C90 -55 200 -50 280 -20 L280 60 C200 30 90 25 0 70Z" fill="url(#s2page2)"/>
+        <path d="M-280 60 C-200 30 -90 25 0 70 C90 25 200 30 280 60 L280 72 C200 44 90 40 0 84 C-90 40 -200 44 -280 72Z" fill="#7a2d2d"/>
+        <g stroke="#b9a988" stroke-width="3" opacity=".6">
+          <line x1="-240" y1="-15" x2="-40" y2="5"/><line x1="-240" y1="5" x2="-40" y2="25"/><line x1="-240" y1="25" x2="-40" y2="45"/>
+          <line x1="40" y1="5" x2="240" y2="-15"/><line x1="40" y1="25" x2="240" y2="5"/><line x1="40" y1="45" x2="240" y2="25"/>
+        </g>
+        <line x1="0" y1="-10" x2="0" y2="70" stroke="#c9b48a" stroke-width="2"/>
+      </g>
+    </svg>
+    <div class="center" style="justify-content:flex-start;padding-top:calc(var(--u)*14)">
+      <div class="label" id="s2l">Oración · Trabajo · Fe</div>
+    </div>
+  </div>
+
+  <!-- 3 · Título -->
+  <div class="scene" id="s3">
+    <div class="full" style="background:radial-gradient(ellipse at 50% 40%,#22365f,#0b1429 70%)"></div>
+    <div class="center">
+      <div class="label" id="s3l">Un libro para crecer en la fe</div>
+      <div class="gold-line" id="s3g" style="width:0"></div>
+      <div class="big" id="s3t">El Camino<br><i>del Discípulo</i></div>
+    </div>
+  </div>
+
+  <!-- 4 · El recorrido -->
+  <div class="scene" id="s4">
+    <svg class="full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+      <defs><radialGradient id="s4bg" cx="50%" cy="20%" r="90%"><stop offset="0" stop-color="#3a4d7a"/><stop offset=".5" stop-color="#162649"/><stop offset="1" stop-color="#0b1429"/></radialGradient></defs>
+      <rect width="1000" height="1000" fill="url(#s4bg)"/>
+      <path d="M0 1000 V720 L180 640 L300 680 L500 250 L700 680 L820 640 L1000 720 V1000Z" fill="#1c2e57"/>
+      <path d="M500 250 L545 345 L520 336 L500 315 L478 340 L455 345Z" fill="#f6e3b4" opacity=".5"/>
+      <path id="s4p" d="M500 720 L395 650 L605 570 L420 485 L575 400 L500 275" fill="none" stroke="#f6e3b4" stroke-width="7"
+            stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+      <g id="s4n"></g>
+    </svg>
+  </div>
+
+  <!-- 5 · Sagradas Escrituras -->
+  <div class="scene" id="s5">
+    <div class="full" style="background:radial-gradient(circle at 50% 55%,#5b4a33 0%,#22263a 40%,#0b1429 75%)"></div>
+    <svg class="full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+      <g id="s5r" transform="translate(500 560)" stroke="#f6e3b4" stroke-width="2" opacity=".35">
+      </g>
+    </svg>
+    <div class="center">
+      <div class="label">Basado en la Palabra</div>
+      <div class="gold-line" style="width:calc(var(--u)*30)"></div>
+      <div class="big" style="font-size:calc(var(--u)*8)">Sagradas<br><i>Escrituras</i></div>
+    </div>
+  </div>
+
+  <!-- 6 · La cima: fieles hasta el final -->
+  <div class="scene" id="s6">
+    <img class="full" id="s6i" src="portada-fondo.png" style="object-fit:cover;transform-origin:50% 52%">
+    <div class="center" style="justify-content:flex-start;padding-top:calc(var(--u)*13)">
+      <div class="big" id="s6t" style="font-size:calc(var(--u)*7.4);opacity:0">Fieles a Cristo<br><i>hasta el final</i></div>
+    </div>
+  </div>
+
+  <!-- 7 · Disponible -->
+  <div class="scene" id="s7">
+    <div class="full" style="background:radial-gradient(ellipse at 50% 35%,#2a3f6e,#0b1429 70%)"></div>
+    <div class="center" id="s7c" style="gap:calc(var(--u)*3.2)">
+      <img id="s7b" src="portada.png" style="height:calc(var(--u)*var(--bookH));border-radius:3px 10px 10px 3px;box-shadow:0 calc(var(--u)*3) calc(var(--u)*6) rgba(0,0,0,.6),0 0 0 1px rgba(233,199,122,.4)">
+      <div>
+        <div class="label" style="margin-bottom:calc(var(--u)*1.6)">Ya disponible en</div>
+        <div class="big" style="font-size:calc(var(--u)*8)">Amazon</div>
+        <div style="font:500 calc(var(--u)*2.5)/1.4 var(--sans);color:#cfc9bb;margin-top:calc(var(--u)*1.5)">elcaminodeldiscipulo.vercel.app</div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="dust"></canvas>
+  <div class="vignette"></div>
+  <div id="sub"></div>
+</div>
+
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var W = +q.get('w') || 1280, H = +q.get('h') || 720;
+  var portrait = H > W;
+  var stage = document.getElementById('stage');
+  var u = Math.min(W, H) / 100 * (portrait ? 1.25 : 1);
+  stage.style.width = W + 'px'; stage.style.height = H + 'px';
+  stage.style.setProperty('--u', u + 'px');
+  stage.style.setProperty('--subB', portrait ? '16%' : '7%');
+  stage.style.setProperty('--bookH', portrait ? 52 : 46);
+  if (!portrait) { var c7 = document.getElementById('s7c'); c7.style.flexDirection = 'row'; c7.style.textAlign = 'left'; c7.style.gap = 'calc(var(--u)*7)'; }
+
+  var DURATION = 41.5;
+  var CUES = [
+    [0.0, 2.3, 'Todo camino comienza con un primer paso…'],
+    [3.2, 4.7, 'Pero no basta con comenzar.'],
+    [5.15, 7.85, 'Después de mucho tiempo de oración y trabajo,'],
+    [8.1, 13.3, 'llega un libro pensado para quienes desean crecer en su relación con Dios y fortalecer su fe.'],
+    [13.75, 15.1, '<em>El Camino del Discípulo.</em>'],
+    [15.65, 18.6, 'A lo largo de sus capítulos, recorre el camino del discípulo:'],
+    [19.2, 21.35, 'desde los fundamentos de la vida cristiana…'],
+    [21.6, 24.5, '…hasta una fe madura, firme y perseverante.'],
+    [24.95, 27.95, 'Siempre basada en la enseñanza de las Sagradas Escrituras.'],
+    [28.45, 32.1, 'Porque el verdadero desafío no es solo comenzar la vida cristiana…'],
+    [32.55, 35.2, '…es permanecer fieles a Cristo hasta el final.'],
+    [35.65, 37.05, '<em>El Camino del Discípulo.</em>'],
+    [37.4, 39.6, 'Ya disponible en Amazon.']
+  ];
+  var SCENES = [ ['s1',0,5.4], ['s2',5.0,13.75], ['s3',13.45,15.75], ['s4',15.45,25.0], ['s5',24.7,28.6], ['s6',28.3,35.75], ['s7',35.45,DURATION+1] ];
+  var NODES = [ ['Fundamentos',19.3,[395,650]], ['Madurez',21.7,[605,570]], ['Firmeza',23.1,[420,485]], ['Perseverancia',23.9,[575,400]] ];
+
+  function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+  function prog(t,a,b){return clamp((t-a)/(b-a),0,1);}
+  function ease(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+  function win(t,a,b,f){f=f||.6;return Math.min(prog(t,a,a+f),1-prog(t,b-f,b));}
+  function $(id){return document.getElementById(id);}
+
+  // Nodos del recorrido
+  var g = $('s4n'), html = '';
+  NODES.forEach(function(n,i){
+    var x=n[2][0], y=n[2][1], right = x < 500;
+    html += '<g class="stage-node" id="n'+i+'" opacity="0"><circle cx="'+x+'" cy="'+y+'" r="34" fill="#f6d58e" opacity=".25"/>' +
+      '<circle cx="'+x+'" cy="'+y+'" r="15" fill="#f6e3b4"/>' +
+      '<text x="'+x+'" y="'+(y-30)+'" text-anchor="middle" font-size="25" fill="#fff" letter-spacing="2" stroke="#0b1429" stroke-width="7" paint-order="stroke" stroke-linejoin="round">'+n[0].toUpperCase()+'</text></g>';
+  });
+  g.innerHTML = html;
+  // Rayos escena 5
+  var r = '';
+  for (var i=0;i<36;i++){ var a=i/36*Math.PI*2; r+='<line x1="'+Math.cos(a)*120+'" y1="'+Math.sin(a)*120+'" x2="'+Math.cos(a)*900+'" y2="'+Math.sin(a)*900+'"/>'; }
+  $('s5r').innerHTML = r;
+
+  // Polvo dorado determinista
+  var cv = $('dust'), ctx = cv.getContext('2d');
+  cv.width = W; cv.height = H;
+  var P = [], seed = 7;
+  function rnd(){ seed = (seed*16807)%2147483647; return seed/2147483647; }
+  for (var k=0;k<90;k++) P.push({x:rnd(), y:rnd(), s:.4+rnd()*1.6, v:.008+rnd()*.02, ph:rnd()*6.28, a:.25+rnd()*.6});
+  function dust(t){
+    ctx.clearRect(0,0,W,H);
+    P.forEach(function(p){
+      var y = ((p.y - t*p.v) % 1 + 1) % 1, x = p.x + Math.sin(t*.5+p.ph)*.012;
+      var tw = .55 + .45*Math.sin(t*1.7+p.ph*3);
+      ctx.beginPath(); ctx.arc(x*W, y*H, p.s*u*.18, 0, 6.283);
+      ctx.fillStyle = 'rgba(246,220,160,'+(p.a*tw).toFixed(3)+')'; ctx.fill();
+    });
+  }
+
+  window.TRAILER_DURATION = DURATION;
+  window.render = function(t){
+    SCENES.forEach(function(s){
+      var el = $(s[0]), o = win(t, s[1], s[2], .7), p = prog(t, s[1], s[2]);
+      el.style.opacity = o.toFixed(3);
+      el.style.transform = 'scale(' + (1.0 + p*.06).toFixed(4) + ')';
+      el.style.visibility = o > 0 ? 'visible' : 'hidden';
+    });
+    // 1
+    $('s1s').setAttribute('cy', (720 - ease(prog(t,0,5.4))*150).toFixed(1));
+    $('s1p').setAttribute('stroke-dashoffset', (1-ease(prog(t,.3,4.6))).toFixed(4));
+    // 2
+    $('s2b').setAttribute('opacity', (ease(prog(t,5.6,8.5))*.9).toFixed(3));
+    $('s2l').style.opacity = win(t,6.0,13.4,.8).toFixed(3);
+    $('s2l').style.letterSpacing = (0.3 + prog(t,5.5,13.5)*0.15).toFixed(3) + 'em';
+    // 3
+    $('s3g').style.width = (ease(prog(t,13.6,14.6))*u*36).toFixed(1) + 'px';
+    $('s3t').style.opacity = prog(t,13.7,14.3).toFixed(3);
+    $('s3t').style.letterSpacing = ((1-ease(prog(t,13.6,15.6)))*0.08).toFixed(4) + 'em';
+    $('s3l').style.opacity = prog(t,14.0,14.6).toFixed(3);
+    // 4
+    $('s4p').setAttribute('stroke-dashoffset', (1-ease(prog(t,16.0,24.2))).toFixed(4));
+    NODES.forEach(function(n,i){ $('n'+i).setAttribute('opacity', prog(t,n[1],n[1]+.45).toFixed(3)); });
+    // 5
+    $('s5r').setAttribute('transform', 'translate(500 560) rotate(' + (t*4).toFixed(2) + ')');
+    // 6
+    $('s6i').style.transform = 'scale(' + (1.05 + ease(prog(t,28.3,35.7))*.35).toFixed(4) + ')';
+    $('s6t').style.opacity = win(t,32.4,35.7,.6).toFixed(3);
+    // 7
+    var b = ease(prog(t,35.6,37.2));
+    $('s7b').style.transform = 'perspective(1200px) rotateY(' + (-28 + b*14).toFixed(2) + 'deg) translateY(' + ((1-b)*u*4).toFixed(1) + 'px)';
+    // Subtítulos
+    var cue = null; CUES.forEach(function(c){ if (t >= c[0]-.15 && t <= c[1]+.25) cue = c; });
+    var sub = $('sub');
+    if (cue) { if (sub.dataset.k !== String(cue[0])) { sub.innerHTML = cue[2]; sub.dataset.k = cue[0]; } sub.style.opacity = win(t, cue[0]-.15, cue[1]+.25, .25).toFixed(3); }
+    else sub.style.opacity = 0;
+    if (q.get('nosub') === '1') sub.style.display = 'none';
+    dust(t);
+  };
+  render(+q.get('t') || 0);
+})();
+</script>
+</body></html>
