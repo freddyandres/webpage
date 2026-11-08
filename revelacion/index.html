@@ -162,9 +162,65 @@
           <svg class="bear-sit"><use href="#bear-sit"/></svg>
         </div>
       </div>
-      <a class="scroll-hint" href="#info" aria-label="Bajar a la invitación">
+      <a class="scroll-hint" href="#envivo" aria-label="Bajar a la transmisión">
         <svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
+    </section>
+
+    <!-- EN VIVO -->
+    <section class="live" id="envivo">
+      <div class="section-head reveal">
+        <p class="kicker">Transmisión</p>
+        <h2 class="script">¡En vivo!</h2>
+        <p class="lead" id="liveLead">Desde donde estés, acompáñanos en este momento tan especial.</p>
+      </div>
+
+      <div class="player-frame reveal" id="playerFrame">
+        <svg class="peek peek-left" aria-hidden="true"><use href="#bear-peek"/></svg>
+        <div class="player" id="player">
+          <div class="placeholder" id="placeholder">
+            <div class="ph-glow" aria-hidden="true"></div>
+            <svg class="ph-bear" aria-hidden="true"><use href="#bear"/></svg>
+            <p class="ph-title" id="phTitle">La transmisión aparecerá aquí</p>
+            <p class="ph-sub" id="phSub">Domingo 8 de noviembre · 5:20 p.m.</p>
+            <p class="ph-count" id="phCount"></p>
+            <div class="ph-meet" id="phMeet" hidden>
+              <a class="btn btn-meet" id="meetLink" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="2.5" y="6" width="13" height="12" rx="3" fill="currentColor"/><path d="M16.5 10.2l5-3v9.6l-5-3z" fill="currentColor"/></svg> Unirme a la videollamada</a>
+            </div>
+          </div>
+        </div>
+        <div class="hearts" id="hearts" aria-hidden="true"></div>
+      </div>
+      <p class="open-external" id="openExternal" hidden>
+        ¿No carga el video? <a id="openExternalLink" href="#" target="_blank" rel="noopener">Ábrelo aquí</a>
+      </p>
+
+      <div class="teams reveal" id="teams">
+        <h3>¿Tú qué crees que será?</h3>
+        <p class="teams-sub">Elige tu equipo y llena la pantalla de amor 💕</p>
+        <div class="team-buttons">
+          <button class="team-btn nino" data-team="nino" type="button" aria-pressed="false">
+            <svg><use href="#heart"/></svg><span>Team <b>Niño</b></span>
+          </button>
+          <button class="team-btn nina" data-team="nina" type="button" aria-pressed="false">
+            <svg><use href="#heart"/></svg><span>Team <b>Niña</b></span>
+          </button>
+        </div>
+        <p class="team-msg" id="teamMsg" aria-live="polite"></p>
+
+        <div class="scoreboard" id="scoreboard" hidden>
+          <div class="sb-row">
+            <span class="sb-side nino"><svg><use href="#heart"/></svg><b id="sbNino">0</b> <small>Niño</small></span>
+            <span class="sb-total" id="sbTotal">0 votos</span>
+            <span class="sb-side nina"><small>Niña</small> <b id="sbNina">0</b><svg><use href="#heart"/></svg></span>
+          </div>
+          <div class="sb-bar" role="img" id="sbBar" aria-label="Votos">
+            <span class="sb-fill nino" id="sbFillNino"><i id="sbPctNino">50%</i></span>
+            <span class="sb-fill nina" id="sbFillNina"><i id="sbPctNina">50%</i></span>
+          </div>
+          <p class="sb-note" id="sbNote">Marcador en vivo · se actualiza solo</p>
+        </div>
+      </div>
     </section>
 
     <!-- INVITACIÓN -->
@@ -241,62 +297,6 @@
           <figcaption>Nuestra primera foto · 16 semanas</figcaption>
           <span class="tape" aria-hidden="true"></span>
         </figure>
-      </div>
-    </section>
-
-    <!-- EN VIVO -->
-    <section class="live" id="envivo">
-      <div class="section-head reveal">
-        <p class="kicker">Transmisión</p>
-        <h2 class="script">¡En vivo!</h2>
-        <p class="lead" id="liveLead">Desde donde estés, acompáñanos en este momento tan especial.</p>
-      </div>
-
-      <div class="player-frame reveal" id="playerFrame">
-        <svg class="peek peek-left" aria-hidden="true"><use href="#bear-peek"/></svg>
-        <div class="player" id="player">
-          <div class="placeholder" id="placeholder">
-            <div class="ph-glow" aria-hidden="true"></div>
-            <svg class="ph-bear" aria-hidden="true"><use href="#bear"/></svg>
-            <p class="ph-title" id="phTitle">La transmisión aparecerá aquí</p>
-            <p class="ph-sub" id="phSub">Domingo 8 de noviembre · 5:20 p.m.</p>
-            <p class="ph-count" id="phCount"></p>
-            <div class="ph-meet" id="phMeet" hidden>
-              <a class="btn btn-meet" id="meetLink" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="2.5" y="6" width="13" height="12" rx="3" fill="currentColor"/><path d="M16.5 10.2l5-3v9.6l-5-3z" fill="currentColor"/></svg> Unirme a la videollamada</a>
-            </div>
-          </div>
-        </div>
-        <div class="hearts" id="hearts" aria-hidden="true"></div>
-      </div>
-      <p class="open-external" id="openExternal" hidden>
-        ¿No carga el video? <a id="openExternalLink" href="#" target="_blank" rel="noopener">Ábrelo aquí</a>
-      </p>
-
-      <div class="teams reveal" id="teams">
-        <h3>¿Tú qué crees que será?</h3>
-        <p class="teams-sub">Elige tu equipo y llena la pantalla de amor 💕</p>
-        <div class="team-buttons">
-          <button class="team-btn nino" data-team="nino" type="button" aria-pressed="false">
-            <svg><use href="#heart"/></svg><span>Team <b>Niño</b></span>
-          </button>
-          <button class="team-btn nina" data-team="nina" type="button" aria-pressed="false">
-            <svg><use href="#heart"/></svg><span>Team <b>Niña</b></span>
-          </button>
-        </div>
-        <p class="team-msg" id="teamMsg" aria-live="polite"></p>
-
-        <div class="scoreboard" id="scoreboard" hidden>
-          <div class="sb-row">
-            <span class="sb-side nino"><svg><use href="#heart"/></svg><b id="sbNino">0</b> <small>Niño</small></span>
-            <span class="sb-total" id="sbTotal">0 votos</span>
-            <span class="sb-side nina"><small>Niña</small> <b id="sbNina">0</b><svg><use href="#heart"/></svg></span>
-          </div>
-          <div class="sb-bar" role="img" id="sbBar" aria-label="Votos">
-            <span class="sb-fill nino" id="sbFillNino"><i id="sbPctNino">50%</i></span>
-            <span class="sb-fill nina" id="sbFillNina"><i id="sbPctNina">50%</i></span>
-          </div>
-          <p class="sb-note" id="sbNote">Marcador en vivo · se actualiza solo</p>
-        </div>
       </div>
     </section>
 
