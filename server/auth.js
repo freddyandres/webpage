@@ -66,7 +66,7 @@ async function createAdmin({ username, fullName, password, role = 'admin' }) {
 
 async function changePassword(adminId, currentPassword, newPassword) {
   const admin = await db.one('SELECT password_hash FROM patita.admins WHERE id = $1', [adminId]);
-  if (!admin || !(await verifyPassword(currentPassword, admin.password_hash))) return 'La contraseña actual no es correcta.';
+  if (!admin || !(await verifyPassword(currentPassword, admin.password_hash))) return 'La clave actual no es correcta.';
   const problem = validatePasswordStrength(newPassword);
   if (problem) return problem;
   await db.query('UPDATE patita.admins SET password_hash = $1 WHERE id = $2', [await hashPassword(newPassword), adminId]);
@@ -79,8 +79,13 @@ const LOCK_MINUTES = 15;
 
 const bucketFor = (username, ip) => `login|${crypto.createHash('sha256').update(`${String(username).toLowerCase()}|${ip}`).digest('hex')}`;
 
+/** Cuenta compartida de los organizadores: se ingresa solo con la clave. */
+const SHARED_USERNAME = 'organizadores';
+const SHARED_FULL_NAME = 'Organizadores (Samantha y Ángel)';
+
 /** Devuelve { admin, token } si las credenciales son correctas, o { error, status }. */
 async function login(username, password, ip) {
+  if (!username) username = SHARED_USERNAME;
   const bucket = bucketFor(username, ip);
   const recent = await db.one(`SELECT count(*)::int AS n, max(at) AS last FROM patita.rate_events
     WHERE bucket = $1 AND at > now() - make_interval(mins => $2)`, [bucket, LOCK_MINUTES]);
@@ -92,7 +97,7 @@ async function login(username, password, ip) {
   const ok = await verifyPassword(String(password || ''), admin ? admin.password_hash : await getDummyHash());
   if (!admin || !ok) {
     await db.query('INSERT INTO patita.rate_events (bucket) VALUES ($1)', [bucket]);
-    return { status: 401, error: 'Usuario o contraseña incorrectos.' };
+    return { status: 401, error: 'La clave no es correcta.' };
   }
   await db.query('DELETE FROM patita.rate_events WHERE bucket = $1', [bucket]);
   const token = crypto.randomBytes(32).toString('base64url');
@@ -128,6 +133,7 @@ function sha256(v) {
  */
 async function bootstrapFromEnv() {
   const seeds = [
+    { env: 'ADMIN_SHARED_PASSWORD', username: SHARED_USERNAME, fullName: SHARED_FULL_NAME },
     { env: 'ADMIN_SAMANTHA_PASSWORD', username: process.env.ADMIN_SAMANTHA_USER || 'samantha', fullName: 'Samantha Castillo Cano' },
     { env: 'ADMIN_ANGEL_PASSWORD', username: process.env.ADMIN_ANGEL_USER || 'angel', fullName: 'Ángel Esteban Cano Narváez' },
   ];
@@ -146,5 +152,5 @@ async function bootstrapFromEnv() {
 
 module.exports = {
   hashPassword, verifyPassword, validatePasswordStrength, createAdmin, changePassword,
-  login, logout, sessionAdmin, bootstrapFromEnv, MIN_PASSWORD_LENGTH,
+  login, logout, sessionAdmin, bootstrapFromEnv, MIN_PASSWORD_LENGTH, SHARED_USERNAME, SHARED_FULL_NAME,
 };

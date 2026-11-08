@@ -3,7 +3,9 @@
 const db = require('./db');
 const config = require('./config');
 const settings = require('./settings');
-const { CATEGORIES, SPACE_OPTIONS, STATUSES, labelOf } = require('./catalog');
+const { CATEGORIES, LEGACY_CATEGORIES, SPACE_OPTIONS, STATUSES, labelOf } = require('./catalog');
+
+const ALL_CATEGORIES = [...CATEGORIES, ...LEGACY_CATEGORIES];
 
 const formatCode = (id) => `UPP-${String(id).padStart(3, '0')}`;
 const iso = (d) => (d ? new Date(d).toISOString() : null);
@@ -70,7 +72,7 @@ function toDto(r) {
     businessName: r.business_name,
     managerName: r.manager_name,
     category: r.category,
-    categoryLabel: labelOf(CATEGORIES, r.category),
+    categoryLabel: labelOf(ALL_CATEGORIES, r.category),
     productsDescription: r.products_description,
     socialMedia: r.social_media,
     hasPhoto: !!r.has_photo,
@@ -182,7 +184,7 @@ async function stats() {
   const paid = await db.one("SELECT count(*)::int AS n, COALESCE(sum(fee_cop),0)::int AS s FROM patita.registrations WHERE status = 'aprobada' AND payment_received");
   const expected = await db.one("SELECT COALESCE(sum(fee_cop),0)::int AS s FROM patita.registrations WHERE status = 'aprobada'");
   const byCategory = (await db.query('SELECT category, count(*)::int AS n FROM patita.registrations GROUP BY category'))
-    .map((r) => ({ category: r.category, label: labelOf(CATEGORIES, r.category), count: r.n }));
+    .map((r) => ({ category: r.category, label: labelOf(ALL_CATEGORIES, r.category), count: r.n }));
   const max = await settings.maxStalls();
   return {
     total,
