@@ -59,6 +59,11 @@
       "foto": "assets/team/10.jpg",
       "team": "niña",
       "nombre": "Abuela Teresa"
+    },
+    {
+      "foto": "assets/team/11.jpg",
+      "team": "dividido",
+      "nombre": "Tío Asmeth y Blanca"
     }
   ]
 }
