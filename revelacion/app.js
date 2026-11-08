@@ -899,7 +899,7 @@
       var t = normTeam(f.team) || "nino";
       if (t === "nino") nN++; else nG++;
       var label = t === "nino" ? "Team Niño 💙" : "Team Niña 💗";
-      if (f.nombre) label = String(f.nombre) + " · " + label;
+
       var b = document.createElement("button");
       b.type = "button";
       b.className = "g-item " + t;
@@ -908,12 +908,19 @@
       img.src = f.foto; img.alt = "Foto " + label; img.loading = "lazy";
       var chip = document.createElement("span");
       chip.className = "g-chip"; chip.textContent = label;
-      b.appendChild(img); b.appendChild(chip);
+      b.appendChild(img);
+      if (f.nombre) {
+        var nm = document.createElement("span");
+        nm.className = "g-name"; nm.textContent = String(f.nombre);
+        b.appendChild(nm);
+        img.alt = "Foto de " + f.nombre + ", " + label;
+      }
+      b.appendChild(chip);
       b.addEventListener("click", function () {
         var d = $("#photoDialog");
         $("#photoDialogImg").src = f.foto;
         $("#photoDialogImg").alt = img.alt;
-        $("#photoDialogCap").textContent = label;
+        $("#photoDialogCap").textContent = (f.nombre ? f.nombre + " · " : "") + label;
         if (d.showModal) d.showModal(); else window.open(f.foto, "_blank");
       });
       box.appendChild(b);

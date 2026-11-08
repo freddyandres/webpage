@@ -12,15 +12,18 @@
   "fotos": [
     {
       "foto": "assets/team/01.jpg",
-      "team": "niño"
+      "team": "niño",
+      "nombre": "Prima Diana"
     },
     {
       "foto": "assets/team/02.jpg",
-      "team": "niño"
+      "team": "niño",
+      "nombre": "Prima Ingrid"
     },
     {
       "foto": "assets/team/03.jpg",
-      "team": "niña"
+      "team": "niña",
+      "nombre": "Familia Erazo Hurtado"
     },
     {
       "foto": "assets/team/04.jpg",
