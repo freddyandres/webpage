@@ -133,11 +133,11 @@
 
   /* ================= Juego 2: ¿Cuánto sabes del bebé? ================= */
   var PREGUNTAS = [
-    { q: "¿A quién se parecerá?", o: ["A mamá 👩", "A papá 👨", "Mitad y mitad 💞", "A los abuelos 👵👴"] },
-    { q: "¿Quién será más dormilón?", o: ["El bebé 😴", "Mamá 🛌", "Papá 💤"] },
+    { q: "¿A quién se parecerá?", o: ["A mamá 👩", "A papá 👨", "Mitad y mitad 💞", "A los abuelos 👵👴", "A la hermanita 👧"] },
+    { q: "¿Quién será más dormilón?", o: ["El bebé 😴", "Mamá 🛌", "Papá 💤", "La hermanita 😪"] },
     { q: "¿Nacerá con mucho cabello?", o: ["¡Muchísimo! 🦁", "Poquito 🌱", "Calvito 🥚"] },
     { q: "¿Será tranquilo o inquieto?", o: ["Tranquilito 😇", "Inquieto 🤸", "Un torbellino 🌪️"] },
-    { q: "¿Quién lo consentirá más?", o: ["Mamá 💗", "Papá 💙", "Los abuelos 🧓", "Los tíos 🎁"] }
+    { q: "¿Quién lo consentirá más?", o: ["Mamá 💗", "Papá 💙", "Los abuelos 🧓", "La hermanita 👧"] }
   ];
   function initTrivia() {
     var box = $("#triviaBox");
@@ -247,6 +247,9 @@
     var ctx = canvas.getContext("2d"), W = 360, H = 480, dpr = 1;
     var overlay = $("#bottleOverlay"), hud = $("#bottleHud"), topBox = $("#bottleTop");
     var state = "idle", items = [], score = 0, lives = 3, babyX = W / 2, targetX = W / 2, t0 = 0, last = 0, spawnAcc = 0, mouthOpen = 0, raf = 0;
+    var level = 1, banner = 0;
+    // Cada 8 puntos sube de nivel: más rápido, más seguido, más brócoli y caídas en zigzag
+    function lvlOf(sc) { return Math.min(10, 1 + Math.floor(sc / 8)); }
 
     function size() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -308,29 +311,45 @@
     function frame(ts) {
       if (state !== "play") return;
       var dt = Math.min(0.05, (ts - last) / 1000 || 0); last = ts;
-      var elapsed = (ts - t0) / 1000, speed = 120 + elapsed * 6, every = Math.max(0.38, 0.9 - elapsed * 0.012);
+      var elapsed = (ts - t0) / 1000;
+      var speed = 125 + (level - 1) * 28 + Math.min(30, elapsed * 1.2);
+      var every = Math.max(0.28, 0.85 - (level - 1) * 0.06);
+      var brocP = Math.min(0.45, 0.18 + (level - 1) * 0.035);
       spawnAcc += dt;
       if (spawnAcc > every) {
         spawnAcc = 0;
-        var r = Math.random(), kind = r < 0.1 ? "gold" : (r < 0.28 + Math.min(0.12, elapsed * 0.003) ? "broc" : "bottle");
-        items.push({ x: rand(22, W - 22), y: -30, k: kind, v: speed * rand(0.85, 1.2), rot: rand(-0.4, 0.4), vr: rand(-1.5, 1.5) });
+        var n = level >= 5 && Math.random() < 0.3 ? 2 : 1;
+        for (var s2 = 0; s2 < n; s2++) {
+          var r = Math.random(), kind = r < 0.08 ? "gold" : (r < 0.08 + brocP ? "broc" : "bottle");
+          var bx = rand(30, W - 30);
+          items.push({ bx: bx, x: bx, y: -30 - s2 * 60, k: kind, v: speed * rand(0.85, 1.2), rot: rand(-0.4, 0.4), vr: rand(-1.5, 1.5),
+            zz: level >= 3 && Math.random() < 0.15 + level * 0.05 ? rand(30, 70) : 0, ph: rand(0, 6) });
+        }
       }
+      banner = Math.max(0, banner - dt);
       babyX += (targetX - babyX) * Math.min(1, dt * 14);
       mouthOpen = Math.max(0, mouthOpen - dt);
       drawBg();
       for (var i = items.length - 1; i >= 0; i--) {
         var it = items[i];
         it.y += it.v * dt; it.rot += it.vr * dt;
+        if (it.zz) { it.ph += dt * 2.6; it.x = Math.max(20, Math.min(W - 20, it.bx + Math.sin(it.ph) * it.zz)); }
         var caught = it.y > H - 92 && it.y < H - 40 && Math.abs(it.x - babyX) < 40;
         if (caught) {
           items.splice(i, 1);
           if (it.k === "broc") {
-            lives--; R.Sound.pop();
+            lives--; R.Sound.sfx("ouch");
             flash("#e85d75");
             if (lives <= 0) return end();
           } else {
             score += it.k === "gold" ? 3 : 1; mouthOpen = 0.25;
-            R.Sound.chime(it.k === "gold" ? "nina" : "nino");
+            R.Sound.sfx(it.k === "gold" ? "gold" : "catch");
+            if (lvlOf(score) > level) {
+              level = lvlOf(score); banner = 1.6;
+              R.Sound.sfx("level");
+              R.Sound.gameTempo(1 + (level - 1) * 0.1);
+              R.burst(innerWidth / 2, innerHeight * 0.4, R.COLORS.mix, 50, { power: 9 });
+            }
             var rc = canvas.getBoundingClientRect();
             R.burst(rc.left + it.x * rc.width / W, rc.top + (H - 70) * rc.height / H, it.k === "gold" ? ["#f7d46b", "#fff3c4", "#e7b43c"] : R.COLORS.mix, it.k === "gold" ? 24 : 10, { power: 5 });
           }
@@ -341,6 +360,15 @@
         if (it.k === "broc") drawBroccoli(it.x, it.y, it.rot); else drawBottle(it.x, it.y, it.k === "gold", it.rot);
       }
       drawBaby(babyX);
+      if (banner > 0) {
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, banner);
+        ctx.fillStyle = "rgba(255,255,255,.85)"; rr(70, 190, 220, 76, 24); ctx.fill();
+        ctx.fillStyle = "#cf5a85"; ctx.textAlign = "center";
+        ctx.font = "700 34px Fredoka, sans-serif"; ctx.fillText("¡Nivel " + level + "!", W / 2, 236);
+        ctx.font = "600 14px Quicksand, sans-serif"; ctx.fillStyle = "#7a4a35"; ctx.fillText(level === 1 ? "¡A jugar!" : "¡Más rápido!", W / 2, 256);
+        ctx.restore();
+      }
       raf = requestAnimationFrame(frame);
     }
     function flash(c) {
@@ -349,23 +377,25 @@
     }
     function hudUpdate() {
       hud.innerHTML = "";
-      hud.appendChild(el("span", "hud-score", "🍼 " + score));
+      hud.appendChild(el("span", "hud-score", "🍼 " + score + " · Nivel " + level));
       hud.appendChild(el("span", "hud-lives", "❤️".repeat(Math.max(0, lives)) + "🤍".repeat(Math.max(0, 3 - lives))));
     }
     function start() {
-      state = "play"; items = []; score = 0; lives = 3; babyX = targetX = W / 2; spawnAcc = 0;
+      state = "play"; items = []; score = 0; lives = 3; babyX = targetX = W / 2; spawnAcc = 0; level = 1; banner = 1.2;
+      R.Sound.sfx("start"); R.Sound.gameTempo(1); R.Sound.gameMusic(true);
       overlay.hidden = true; hudUpdate();
       t0 = last = performance.now();
       cancelAnimationFrame(raf); raf = requestAnimationFrame(frame);
     }
     function end() {
       state = "over"; cancelAnimationFrame(raf);
+      R.Sound.gameMusic(false); R.Sound.sfx("over");
       var best = Math.max(score, Number(R.store.get("revelacion-biberones") || 0));
       R.store.set("revelacion-biberones", String(best));
       overlay.innerHTML = "";
       overlay.appendChild(el("p", "ov-emoji", score >= 20 ? "🏆" : "🍼"));
       overlay.appendChild(el("h3", "ov-title", "¡" + score + (score === 1 ? " biberón!" : " biberones!")));
-      overlay.appendChild(el("p", "ov-sub", "Tu mejor puntaje: " + best));
+      overlay.appendChild(el("p", "ov-sub", "Llegaste al nivel " + level + " · Tu mejor puntaje: " + best));
       if (score > 0) scoreSaver(overlay, "biberones", score, topBox);
       var again = el("button", "btn btn-soft", "Jugar otra vez 🔄");
       again.type = "button"; again.addEventListener("click", start);
@@ -407,14 +437,21 @@
     var scene = $("#objScene");
     if (!scene) return;
     var listBox = $("#objList"), timerEl = $("#objTimer"), overlay = $("#objOverlay"), topBox = $("#objTop");
-    var found = {}, start = 0, penalty = 0, tick = 0, playing = false;
+    var found = {}, start = 0, penalty = 0, tick = 0, playing = false, lv = 0, prevTotal = 0;
+    // Cada nivel: más objetos, más pequeños, más girados y más parecidos a los que buscas
+    var LEVELS = [
+      { cols: 5, rows: 7, min: 34, max: 46, rot: 35, pen: 2, tricky: 0 },
+      { cols: 6, rows: 8, min: 28, max: 38, rot: 70, pen: 3, tricky: 0.3 },
+      { cols: 7, rows: 9, min: 24, max: 32, rot: 120, pen: 4, tricky: 0.5 }
+    ];
+    var TRICKY = ["media", "sonajero", "carrito", "libro"];
 
     function layout() {
-      var cols = 5, rows = 7, cw = 360 / cols, ch = 420 / rows, cells = [];
+      var L = LEVELS[lv], cols = L.cols, rows = L.rows, cw = 360 / cols, ch = 420 / rows, cells = [];
       for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) cells.push([c, r]);
       cells.sort(function () { return Math.random() - 0.5; });
       var kinds = TARGETS.map(function (t) { return t.k; });
-      while (kinds.length < cells.length) kinds.push(pick(DECOYS));
+      while (kinds.length < cells.length) kinds.push(Math.random() < L.tricky ? pick(TRICKY) : pick(DECOYS));
       // los objetos a encontrar van en posiciones al azar entre los demás
       kinds.sort(function () { return Math.random() - 0.5; });
       var html = '<rect width="360" height="300" fill="url(#wallG)"/>' +
@@ -425,11 +462,11 @@
         '<ellipse cx="180" cy="420" rx="150" ry="40" fill="#f6d0de" opacity=".7"/>' +
         '<g stroke="#e8d3b8" stroke-width="5" opacity=".9">' + [40, 70, 100, 130].map(function (x) { return '<line x1="' + x + '" x2="' + x + '" y1="250" y2="330"/>'; }).join("") + '<line x1="30" x2="140" y1="250" y2="250"/></g>';
       cells.forEach(function (cell, i) {
-        var k = kinds[i], x = cell[0] * cw + cw / 2 + rand(-12, 12), y = 40 + cell[1] * ch + ch / 2 + rand(-10, 10);
-        var s = rand(34, 46), rot = rand(-35, 35), color = pick(PALETTE);
+        var k = kinds[i], x = cell[0] * cw + cw / 2 + rand(-cw * 0.2, cw * 0.2), y = 40 + cell[1] * ch + ch / 2 + rand(-ch * 0.18, ch * 0.18);
+        var s = rand(L.min, L.max), rot = rand(-L.rot, L.rot), color = pick(PALETTE);
         var isT = TARGETS.some(function (t) { return t.k === k; });
         html += '<g class="obj' + (isT ? " target" : "") + '" data-k="' + k + '" transform="translate(' + x.toFixed(1) + " " + y.toFixed(1) + ") rotate(" + rot.toFixed(0) + ')" style="color:' + color + '">' +
-          '<circle r="24" fill="transparent"/>' +
+          '<circle r="' + Math.max(16, s * 0.55).toFixed(0) + '" fill="transparent"/>' +
           '<use href="#i-' + k + '" x="' + (-s / 2).toFixed(1) + '" y="' + (-s / 2).toFixed(1) + '" width="' + s.toFixed(1) + '" height="' + s.toFixed(1) + '"/></g>';
       });
       scene.innerHTML = '<defs><linearGradient id="wallG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf3f7"/><stop offset="1" stop-color="#eef7fd"/></linearGradient></defs>' + html;
@@ -447,23 +484,46 @@
       });
     }
     function secs() { return Math.round((performance.now() - start) / 1000) + penalty; }
-    function startGame() {
+    function total() { return prevTotal + secs(); }
+    function showTimer(extra) { timerEl.textContent = "Nivel " + (lv + 1) + "/3 · ⏱️ " + fmtTime(total()) + (extra || ""); }
+    function playLevel() {
       found = {}; penalty = 0; playing = true;
       layout(); renderList();
       overlay.hidden = true;
       start = performance.now();
       clearInterval(tick);
-      tick = setInterval(function () { timerEl.textContent = "⏱️ " + fmtTime(secs()); }, 250);
-      timerEl.textContent = "⏱️ 0 s";
+      tick = setInterval(function () { showTimer(); }, 250);
+      showTimer();
+      R.Sound.gameTempo(1 + lv * 0.15); R.Sound.gameMusic(true);
+    }
+    function startGame() { lv = 0; prevTotal = 0; R.Sound.sfx("start"); playLevel(); }
+    function levelDone() {
+      playing = false; clearInterval(tick);
+      prevTotal += secs();
+      if (lv < LEVELS.length - 1) {
+        R.Sound.sfx("level");
+        overlay.innerHTML = "";
+        overlay.appendChild(el("p", "ov-emoji", ["⭐", "🌟"][lv]));
+        overlay.appendChild(el("h3", "ov-title", "¡Nivel " + (lv + 1) + " superado!"));
+        overlay.appendChild(el("p", "ov-sub", "Llevas " + fmtTime(prevTotal) + ". El siguiente es más difícil: más objetos y más pequeños 👀"));
+        var next = el("button", "btn btn-primary", "Ir al nivel " + (lv + 2) + " →");
+        next.type = "button";
+        next.addEventListener("click", function () { lv++; playLevel(); });
+        overlay.appendChild(next);
+        overlay.hidden = false;
+        celebrate(scene, R.COLORS.mix, 50);
+      } else {
+        finish();
+      }
     }
     function finish() {
-      playing = false; clearInterval(tick);
-      var t = Math.max(3, secs());
+      R.Sound.gameMusic(false); R.Sound.sfx("win");
+      var t = Math.max(3, prevTotal);
       var best = Number(R.store.get("revelacion-objetos") || 0);
       if (!best || t < best) { best = t; R.store.set("revelacion-objetos", String(t)); }
       overlay.innerHTML = "";
       overlay.appendChild(el("p", "ov-emoji", "🧸"));
-      overlay.appendChild(el("h3", "ov-title", "¡Los encontraste todos en " + fmtTime(t) + "!"));
+      overlay.appendChild(el("h3", "ov-title", "¡Superaste los 3 niveles en " + fmtTime(t) + "!"));
       overlay.appendChild(el("p", "ov-sub", "Tu mejor tiempo: " + fmtTime(best)));
       scoreSaver(overlay, "objetos", t, topBox);
       var again = el("button", "btn btn-soft", "Jugar otra vez 🔄");
@@ -481,21 +541,28 @@
         found[k] = true;
         g.classList.add("found");
         g.insertAdjacentHTML("beforeend", '<circle r="13" fill="#2fb47a" opacity=".92"/><path d="M-6 0l4 4 8-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>');
-        R.Sound.chime("nina");
+        R.Sound.sfx("found");
         var r = g.getBoundingClientRect();
         R.burst(r.left + r.width / 2, r.top + r.height / 2, R.COLORS.mix, 22, { power: 6 });
         renderList();
-        if (Object.keys(found).length === TARGETS.length) setTimeout(finish, 450);
+        if (Object.keys(found).length === TARGETS.length) { playing = false; setTimeout(levelDone, 450); }
       } else if (!g.classList.contains("found")) {
-        penalty += 2;
+        var pen = LEVELS[lv].pen;
+        penalty += pen;
         g.classList.remove("nope"); void g.getBoundingClientRect(); g.classList.add("nope");
-        R.Sound.pop();
-        timerEl.textContent = "⏱️ " + fmtTime(secs()) + "  (+2 s)";
+        R.Sound.sfx("wrong");
+        showTimer("  (+" + pen + " s)");
       }
     });
     $("#objStart").addEventListener("click", startGame);
+    document.addEventListener("visibilitychange", function () {
+      if (!playing) return;
+      R.Sound.gameMusic(!document.hidden);
+    });
     layout(); renderList();
     loadTop("objetos", topBox);
+    initObjects.pause = function () { if (playing) R.Sound.gameMusic(false); };
+    initObjects.resume = function () { if (playing) R.Sound.gameMusic(true); };
   }
 
   /* ================= Pestañas de juegos ================= */
@@ -511,6 +578,8 @@
           $("#game-" + o.getAttribute("data-game")).hidden = !on;
         });
         if (g !== "biberones" && initBottles.pause) initBottles.pause();
+        if (g !== "objetos" && initObjects.pause) initObjects.pause();
+        if (g === "objetos" && initObjects.resume) initObjects.resume();
       });
     });
   }
