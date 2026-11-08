@@ -1016,41 +1016,6 @@
     els.forEach(function (e) { io.observe(e); });
   }
 
-  /* ---------------- Video del anuncio: arranca solo al verlo ---------------- */
-  // Los navegadores solo dejan sonar un video después de que la persona toca la página
-  // (por eso la bienvenida "Entrar"). Antes de eso arranca en silencio.
-  function initStoryAutoplay(v) {
-    if (REDUCED || !("IntersectionObserver" in window)) return;
-    var userPaused = false, autoPlaying = false, visible = false;
-    function play() {
-      if (userPaused || !v.paused || v.ended) return;
-      autoPlaying = true;
-      v.muted = !Sound.canSound();
-      var p = v.play();
-      if (p && p.catch) p.catch(function () {
-        // si el navegador no deja con sonido, lo intenta en silencio
-        v.muted = true;
-        v.play().catch(function () { /* sin reproducción automática */ });
-      });
-    }
-    v.addEventListener("pause", function () {
-      // si la persona lo pausó a mano mientras se veía, no lo volvemos a arrancar solos
-      if (visible && !v.ended && autoPlaying && document.visibilityState === "visible") userPaused = true;
-    });
-    v.addEventListener("ended", function () { userPaused = true; });
-    new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        visible = en.isIntersecting;
-        if (visible) play();
-        else if (!v.paused) { autoPlaying = false; v.pause(); autoPlaying = true; }
-      });
-    }, { threshold: 0.6 }).observe(v);
-    // al tocar "Entrar", si el video ya iba en silencio, se le pone sonido
-    document.addEventListener("sonido-listo", function () {
-      if (!v.paused && v.muted && Sound.canSound()) v.muted = false;
-    });
-  }
-
   /* ---------------- Arranque ---------------- */
   function init() {
     // lo que usan los juegos y las cartitas (juegos.js)
@@ -1085,7 +1050,6 @@
     sv.addEventListener("volumechange", function () { if (!sv.paused) Sound.video(!sv.muted); });
     sv.addEventListener("pause", function () { Sound.video(false); });
     sv.addEventListener("ended", function () { Sound.video(false); });
-    initStoryAutoplay(sv);
 
     $("#revealClose").addEventListener("click", closeReveal);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("#revealOverlay").hidden) closeReveal(); });
