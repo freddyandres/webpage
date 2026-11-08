@@ -406,13 +406,14 @@
     else { running = false; ctx.clearRect(0, 0, innerWidth, innerHeight); }
   }
 
-  /* ---------------- Sonido (música del video + efectos sintetizados) ---------------- */
+  /* ---------------- Sonido (canción de cuna + efectos sintetizados) ---------------- */
   var Sound = (function () {
     var ctx = null, master = null, noiseBuf = null;
     // Sonido activado por defecto; solo queda apagado si la persona lo silenció
     var enabled = store.get("revelacion-sonido") !== "0", live = false, paused = false, videoOn = false, unlocked = false;
-    // Música de fondo: el audio del video del anuncio, preparado para repetirse sin cortes
-    var MUSIC_URL = "assets/musica.m4a", MUSIC_VOL = 0.55;
+    // Música de fondo: canción de cuna instrumental original (cajita de música, arpa y colchón suave),
+    // grabada para repetirse sin cortes
+    var MUSIC_URL = "assets/cancion-cuna.m4a", MUSIC_VOL = 0.6;
     var musicBuf = null, musicLoading = null, musicGain = null, musicSrc = null, wantMusic = false;
     var btn, hint;
 
