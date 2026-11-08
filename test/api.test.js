@@ -20,7 +20,7 @@ let base;
 
 const valid = (over = {}) => ({
   fullName: 'María Fernanda López', documentNumber: '', phone: '300 123 4567', email: 'maria@example.com', neighborhood: 'Brisas de los Álamos',
-  businessName: 'Patitas Felices', managerName: 'María Fernanda López', category: 'snacks', productsDescription: 'Galletas horneadas para perros',
+  businessName: 'Patitas Felices', managerName: 'María Fernanda López', category: 'comida', productsDescription: 'Galletas y tortas caseras',
   socialMedia: '@patitasfelices', productsToBring: 'Galletas y tortas', spaceNeeded: 'una_mesa', needsTable: 'si', bringsOwnTable: 'no',
   needsPower: 'no', specialRequest: '', acceptTerms: true, acceptData: true, acceptTruth: true, acceptFee: true, ...over,
 });
@@ -33,6 +33,7 @@ before(async () => {
   base = `http://127.0.0.1:${server.address().port}`;
   await ready();
   await auth.createAdmin({ username: 'samantha', fullName: 'Samantha Castillo Cano', password: 'ClaveSegura123' });
+  await auth.createAdmin({ username: auth.SHARED_USERNAME, fullName: auth.SHARED_FULL_NAME, password: 'ClaveCompartida2026' });
   await auth.createAdmin({ username: 'lector', fullName: 'Solo Lectura', password: 'ClaveLectura123', role: 'lector' });
 });
 
@@ -157,6 +158,13 @@ test('bloqueo tras 5 intentos fallidos', async () => {
   for (let i = 0; i < 5; i++) await post('/api/admin/login', { username: 'lector', password: 'malmalmal1' });
   const r = await post('/api/admin/login', { username: 'lector', password: 'ClaveLectura123' });
   assert.equal(r.status, 429);
+});
+
+test('se ingresa al panel solo con la clave compartida', async () => {
+  assert.equal((await post('/api/admin/login', { password: 'otra-clave-1' })).status, 401);
+  const r = await post('/api/admin/login', { password: 'ClaveCompartida2026' });
+  assert.equal(r.status, 200);
+  assert.equal((await r.json()).admin.fullName, 'Organizadores (Samantha y Ángel)');
 });
 
 test('las contraseñas se guardan cifradas', async () => {

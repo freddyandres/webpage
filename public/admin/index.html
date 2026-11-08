@@ -33,21 +33,17 @@
         <span class="brand-text">Unidos por<br><strong>una Patita</strong></span>
       </div>
       <h1>Panel administrativo</h1>
-      <p class="muted small">Acceso exclusivo para los organizadores autorizados.</p>
+      <p class="muted small">Acceso exclusivo para Samantha Castillo Cano y Ángel Esteban Cano Narváez. Escribe la clave de administración.</p>
       <form id="login-form" novalidate>
         <div class="field">
-          <label for="username">Usuario</label>
-          <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
-        </div>
-        <div class="field">
-          <label for="password">Contraseña</label>
+          <label for="password">Clave de administración</label>
           <div class="pwd-wrap">
             <input id="password" name="password" type="password" autocomplete="current-password" required>
             <button type="button" class="pwd-toggle" aria-label="Mostrar contraseña">Ver</button>
           </div>
         </div>
         <p class="form-alert" id="login-error" role="alert" hidden></p>
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Iniciar sesión</button>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Ingresar al panel</button>
       </form>
       <a class="small back-link" href="/">← Volver a la página pública</a>
     </div>
@@ -168,17 +164,17 @@
         <div class="panel-head"><div><h1>Mi cuenta</h1></div></div>
         <div class="settings-grid">
           <form class="admin-card" id="password-form" novalidate>
-            <h2>Cambiar contraseña</h2>
-            <div class="field"><label for="p-current">Contraseña actual</label><input id="p-current" name="currentPassword" type="password" autocomplete="current-password"></div>
-            <div class="field"><label for="p-new">Nueva contraseña</label><input id="p-new" name="newPassword" type="password" autocomplete="new-password" minlength="10"><small class="muted">Mínimo 10 caracteres, con letras y números.</small></div>
-            <div class="field"><label for="p-new2">Repite la nueva contraseña</label><input id="p-new2" name="newPassword2" type="password" autocomplete="new-password"></div>
+            <h2>Cambiar la clave de administración</h2>
+            <div class="field"><label for="p-current">Clave actual</label><input id="p-current" name="currentPassword" type="password" autocomplete="current-password"></div>
+            <div class="field"><label for="p-new">Nueva clave</label><input id="p-new" name="newPassword" type="password" autocomplete="new-password" minlength="10"><small class="muted">Mínimo 10 caracteres, con letras y números.</small></div>
+            <div class="field"><label for="p-new2">Repite la nueva clave</label><input id="p-new2" name="newPassword2" type="password" autocomplete="new-password"></div>
             <p class="form-alert" id="password-error" hidden></p>
-            <button class="btn btn-primary" type="submit">Actualizar contraseña</button>
+            <button class="btn btn-primary" type="submit">Actualizar clave</button>
           </form>
           <div class="admin-card">
-            <h2>Administradores autorizados</h2>
+            <h2>Acceso al panel</h2>
             <ul class="admin-list" id="admin-list"></ul>
-            <p class="muted small">Las cuentas se crean desde el servidor con <code>npm run admin:create</code>. Rol «admin»: gestión completa. Rol «lector»: solo consulta.</p>
+            <p class="muted small">Samantha y Ángel ingresan con la misma clave. Si la cambias aquí, avísale a la otra persona.</p>
           </div>
         </div>
       </section>

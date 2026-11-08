@@ -46,7 +46,7 @@
     $('#app-view').hidden = true;
     $('#login-view').hidden = false;
     if ($('#detail').open) $('#detail').close();
-    setTimeout(() => $('#username').focus(), 50);
+    setTimeout(() => $('#password').focus(), 50);
   }
 
   async function boot() {
@@ -61,10 +61,10 @@
     e.preventDefault();
     const f = e.target;
     const btn = $('button[type=submit]', f);
-    if (!f.username.value.trim() || !f.password.value) { alertIn('#login-error', 'Escribe tu usuario y contraseña.'); return; }
+    if (!f.password.value) { alertIn('#login-error', 'Escribe la clave de administración.'); return; }
     btn.disabled = true; btn.classList.add('is-loading');
     try {
-      await api('/api/admin/login', { method: 'POST', body: { username: f.username.value.trim(), password: f.password.value } });
+      await api('/api/admin/login', { method: 'POST', body: { password: f.password.value } });
       f.password.value = '';
       alertIn('#login-error', '');
       const data = await api('/api/admin/me');
@@ -340,19 +340,19 @@
       const { items: admins } = await api('/api/admin/admins');
       $('#admin-list').replaceChildren(...admins.map((a) => el('li', {},
         el('span', { class: 'avatar sm' }, a.fullName.charAt(0)),
-        el('div', {}, el('strong', {}, a.fullName), el('small', {}, `Usuario: ${a.username} · Rol: ${a.role}${a.lastLoginAt ? ` · Último ingreso: ${fmtDate(a.lastLoginAt)}` : ''}`)))));
+        el('div', {}, el('strong', {}, a.fullName), el('small', {}, `${a.role === 'admin' ? 'Acceso completo' : 'Solo consulta'}${a.lastLoginAt ? ` · Último ingreso: ${fmtDate(a.lastLoginAt)}` : ''}`)))));
     } catch { /* manejado */ }
   }
 
   $('#password-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const f = e.target;
-    if (f.newPassword.value !== f.newPassword2.value) { alertIn('#password-error', 'Las contraseñas nuevas no coinciden.'); return; }
+    if (f.newPassword.value !== f.newPassword2.value) { alertIn('#password-error', 'Las claves nuevas no coinciden.'); return; }
     try {
       await api('/api/admin/password', { method: 'POST', body: { currentPassword: f.currentPassword.value, newPassword: f.newPassword.value } });
       f.reset();
       alertIn('#password-error', '');
-      toast('Contraseña actualizada');
+      toast('Clave actualizada');
     } catch (err) { alertIn('#password-error', err.message); }
   });
 

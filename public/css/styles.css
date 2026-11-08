@@ -448,3 +448,8 @@ section[id], #form-card, #confirm-card, #consulta { scroll-margin-top: 88px; }
   .luna-arch { border-width: 7px; }
   .luna-placeholder p { font-size: .82rem; }
 }
+
+/* Acceso al panel desde el pie de página */
+.admin-access { display: inline-flex; align-items: center; gap: .5rem; margin: 1rem 0 .4rem; padding: .6rem 1.2rem; border-radius: var(--pill); border: 1.5px solid rgba(243, 198, 204, .45); color: var(--pink) !important; font-weight: 800; font-size: .92rem; text-decoration: none; transition: background .2s, color .2s; }
+.admin-access:hover { background: var(--pink); color: var(--ink) !important; }
+.admin-access .ico { fill: none; }
