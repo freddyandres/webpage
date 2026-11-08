@@ -756,7 +756,7 @@
       var t = store.get("revelacion-team");
       if ((t === "nino" || t === "nina") && store.get("revelacion-votado") !== t && !normTeam(cfg.revelado)) vote(t);
     }
-    return { init: init, vote: vote, refresh: function () { if (counts) show(counts); } };
+    return { init: init, vote: vote, rpc: rpc, voterId: voterId, refresh: function () { if (counts) show(counts); } };
   })();
 
   function initTeams() {
@@ -979,6 +979,8 @@
 
   /* ---------------- Arranque ---------------- */
   function init() {
+    // lo que usan los juegos y las cartitas (juegos.js)
+    window.Revelacion = { store: store, rpc: Votes.rpc, voterId: Votes.voterId, burst: burst, COLORS: COLORS, Sound: Sound, normTeam: normTeam };
     sizeCanvas();
     buildStars();
     buildGarland();
