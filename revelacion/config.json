@@ -1,5 +1,5 @@
 {
-  "_ayuda": "1) La videollamada de Google Meet está en 'meet'. Si además transmites por YouTube o Facebook, pega ese link en 'youtube' o 'facebook' y se verá dentro de la página. 2) Si transmites con el celular en vertical, pon 'formato' en 'vertical'. 3) Cuando se haga la revelación escribe \"niño\" o \"niña\" en 'revelado'. 4) En 'whatsapp' pon el número (con 57 adelante, ej. 573001234567) al que deben llegar las fotos de Team Niño/Niña; si lo dejas vacío, cada persona escoge a quién enviarla. La página revisa este archivo cada 30 segundos, así que quienes la tengan abierta verán los cambios sin recargar. 5) 'fotos' es la galería del Team, en orden: cada foto con su archivo, su equipo (\"niño\" o \"niña\") y, si quieres, un 'nombre'.",
+  "_ayuda": "1) La videollamada de Google Meet está en 'meet'. Si además transmites por YouTube o Facebook, pega ese link en 'youtube' o 'facebook' y se verá dentro de la página. 2) Si transmites con el celular en vertical, pon 'formato' en 'vertical'. 3) Cuando se haga la revelación escribe \"niño\" o \"niña\" en 'revelado'. 4) En 'whatsapp' pon el número (con 57 adelante, ej. 573001234567) al que deben llegar las fotos de Team Niño/Niña; si lo dejas vacío, cada persona escoge a quién enviarla. La página revisa este archivo cada 30 segundos, así que quienes la tengan abierta verán los cambios sin recargar. 5) 'fotos' es la galería del Team, en orden: cada foto con su archivo, su equipo (\"niño\", \"niña\" o \"dividido\" si hay de los dos) y, si quieres, un 'nombre'.",
   "inicio": "2026-11-08T17:20:00-05:00",
   "duracionHoras": 2.5,
   "youtube": "",
@@ -49,6 +49,11 @@
       "foto": "assets/team/08.jpg",
       "team": "niño",
       "nombre": "Julieth"
+    },
+    {
+      "foto": "assets/team/09.jpg",
+      "team": "dividido",
+      "nombre": "Tíos Pao y Chris"
     }
   ]
 }
