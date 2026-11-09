@@ -74,6 +74,11 @@
       "foto": "assets/team/13.jpg",
       "team": "niño",
       "nombre": "Amiga Nita"
+    },
+    {
+      "foto": "assets/team/14.jpg",
+      "team": "niña",
+      "nombre": "Prima Jessica"
     }
   ]
 }
