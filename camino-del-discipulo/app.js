@@ -52,7 +52,7 @@
   var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (entries) {
     entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
   }, { threshold: .18 }) : null;
-  document.querySelectorAll('.head, .about__text, .audio-card, .checks li, .quote blockquote, .verse, .stage, .review__intro, .steps li, .kit__item, .file, .share, .closing__inner, .player')
+  document.querySelectorAll('.head, .about__text, .author__photo, .author__text, .audio-card, .checks li, .quote blockquote, .verse, .stage, .review__intro, .steps li, .kit__item, .file, .share, .closing__inner, .player')
     .forEach(function (el, i) {
       if (!io) return;
       el.classList.add('reveal'); el.style.transitionDelay = (i % 4) * 70 + 'ms'; io.observe(el);

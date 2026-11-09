@@ -1,7 +1,7 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><link rel="stylesheet" href="common.css">
 <style>
   .card{position:relative;overflow:hidden;color:#f6e3b4;font-family:var(--serif);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-        background:radial-gradient(ellipse at 50% 30%,#2a3f6e,#14213d 50%,#0b1429 100%)}
+        background:radial-gradient(ellipse at 50% 30%,#5a3530,#311919 50%,#1c0f0e 100%)}
   .card::before{content:"";position:absolute;inset:28px;border:2px solid rgba(233,199,122,.55);pointer-events:none}
   .card::after{content:"";position:absolute;inset:38px;border:1px solid rgba(233,199,122,.25);pointer-events:none}
   .label{font:600 26px/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;color:#e9c77a}
@@ -12,7 +12,7 @@
   .book{border-radius:4px 14px 14px 4px;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(233,199,122,.4)}
   .verse{font:italic 500 70px/1.25 var(--serif);color:#fff;max-width:860px}
   .ref{font:600 34px/1 var(--serif);color:#e9c77a;margin-top:40px;letter-spacing:.05em}
-  .num{width:110px;height:110px;border-radius:50%;display:grid;place-items:center;background:#e9c77a;color:#0b1429;font:700 60px/1 var(--serif);margin-bottom:34px}
+  .num{width:110px;height:110px;border-radius:50%;display:grid;place-items:center;background:#e9c77a;color:#1c0f0e;font:700 60px/1 var(--serif);margin-bottom:34px}
   .stars{font-size:84px;letter-spacing:12px;color:#e9c77a;margin:20px 0 10px}
   .glow{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(233,199,122,.22),transparent 65%);pointer-events:none}
   .brand{position:absolute;bottom:78px;left:0;right:0;font:600 30px/1 var(--serif);letter-spacing:.2em;color:#e9c77a;opacity:.9}
@@ -29,15 +29,15 @@ var k = location.hash.slice(1), r = document.getElementById('root'), h = '';
 function size(w,hh){ r.innerHTML = '<div class="card" style="width:'+w+'px;height:'+hh+'px">'+h+'</div>'; }
 if (k === 'historia') {
   h = '<div class="glow" style="top:300px"></div><div class="label">Ya disponible en Amazon</div><div class="line"></div>' +
-      '<img class="book" src="portada.png" style="height:880px;margin:30px 0 70px">' +
+      '<img class="book" src="portada-real.png" style="height:880px;margin:30px 0 70px">' +
       '<div class="title" style="font-size:96px">El Camino<br><i>del Discípulo</i></div><div class="line"></div>' +
-      '<div class="url">elcaminodeldiscipulo.vercel.app</div>';
+      '<div class="url" style="font:600 40px/1 var(--serif);color:#f6e3b4;margin-bottom:22px">Nilson Obonaga</div><div class="url">elcaminodeldiscipulo.vercel.app</div>';
   size(1080,1920);
 } else if (k === 'publicacion') {
   h = '<div class="glow" style="left:-200px"></div><div style="display:flex;align-items:center;gap:70px;padding:0 90px">' +
-      '<img class="book" src="portada.png" style="height:620px;transform:perspective(1400px) rotateY(12deg)">' +
+      '<img class="book" src="portada-real.png" style="height:620px;transform:perspective(1400px) rotateY(12deg)">' +
       '<div style="text-align:left"><div class="label">¡Ya disponible!</div><div class="title" style="font-size:86px;margin:30px 0">El Camino<br><i>del Discípulo</i></div>' +
-      '<div style="font:500 32px/1.45 var(--sans);color:#d6d1c4;max-width:420px">Un libro para crecer en la fe y permanecer fieles a Cristo hasta el final.</div>' +
+      '<div style="font:500 32px/1.45 var(--sans);color:#d6d1c4;max-width:420px">Una guía práctica para una fe firme.<br><b style="color:#f6e3b4">Nilson Obonaga</b></div>' +
       '<div class="label" style="margin-top:44px;letter-spacing:.18em">Disponible en Amazon</div></div></div>';
   size(1080,1080);
 } else if (k === 'resena') {
@@ -49,8 +49,8 @@ if (k === 'historia') {
 } else if (k === 'og') {
   h = '<div class="glow" style="right:-300px;top:-250px"></div><div style="display:flex;align-items:center;gap:80px;padding:0 100px;width:100%">' +
       '<div style="text-align:left;flex:1"><div class="label" style="font-size:20px">✦ Ya disponible en Amazon</div><div class="title" style="font-size:96px;margin:26px 0">El Camino<br><i>del Discípulo</i></div>' +
-      '<div style="font:500 26px/1.5 var(--sans);color:#d6d1c4">Desde los fundamentos de la vida cristiana hasta una fe madura, firme y perseverante.</div></div>' +
-      '<img class="book" src="portada.png" style="height:470px;transform:perspective(1400px) rotateY(-14deg)"></div>';
+      '<div style="font:500 26px/1.5 var(--sans);color:#d6d1c4">Una guía práctica para una fe firme · <b style="color:#f6e3b4">Nilson Obonaga</b></div></div>' +
+      '<img class="book" src="portada-real.png" style="height:470px;transform:perspective(1400px) rotateY(-14deg)"></div>';
   size(1200,630);
 } else if (V[k]) {
   var v = V[k];

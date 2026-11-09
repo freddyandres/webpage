@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="common.css">
 <style>
   html,body{overflow:hidden}
-  #stage{position:relative;overflow:hidden;background:#0b1429;color:#f6e3b4;font-family:var(--serif)}
+  #stage{position:relative;overflow:hidden;background:#1c0f0e;color:#f6e3b4;font-family:var(--serif)}
   .scene{position:absolute;inset:0;opacity:0;will-change:opacity,transform}
   .full{position:absolute;inset:0;width:100%;height:100%}
   .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
@@ -24,13 +24,13 @@
   <div class="scene" id="s1">
     <svg class="full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
       <defs>
-        <linearGradient id="s1sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1429"/><stop offset=".55" stop-color="#26396a"/><stop offset=".78" stop-color="#c98f52" id="s1hz"/><stop offset="1" stop-color="#0b1429"/></linearGradient>
+        <linearGradient id="s1sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c0f0e"/><stop offset=".55" stop-color="#5a3530"/><stop offset=".78" stop-color="#c98f52" id="s1hz"/><stop offset="1" stop-color="#1c0f0e"/></linearGradient>
         <radialGradient id="s1sun"><stop offset="0" stop-color="#fff6dc"/><stop offset=".3" stop-color="#f6d58e"/><stop offset="1" stop-color="#f6d58e" stop-opacity="0"/></radialGradient>
       </defs>
       <rect width="1000" height="1000" fill="url(#s1sky)"/>
       <circle id="s1s" cx="500" cy="640" r="240" fill="url(#s1sun)"/>
-      <path d="M0 610 Q250 570 500 600 T1000 590 V1000 H0Z" fill="#1a2b52"/>
-      <path d="M0 680 Q300 650 520 675 T1000 668 V1000 H0Z" fill="#111d38"/>
+      <path d="M0 610 Q250 570 500 600 T1000 590 V1000 H0Z" fill="#3a1f1c"/>
+      <path d="M0 680 Q300 650 520 675 T1000 668 V1000 H0Z" fill="#24120f"/>
       <path id="s1p" d="M470 820 C420 760 580 735 520 700 C470 672 535 640 506 618 C498 610 500 604 500 600"
             fill="none" stroke="#f6e3b4" stroke-width="16" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" opacity=".9"/>
     </svg>
@@ -40,7 +40,7 @@
   <div class="scene" id="s2">
     <svg class="full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
       <defs>
-        <radialGradient id="s2bg" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#2a3f6e"/><stop offset="1" stop-color="#0b1429"/></radialGradient>
+        <radialGradient id="s2bg" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#5a3530"/><stop offset="1" stop-color="#1c0f0e"/></radialGradient>
         <linearGradient id="s2beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e3b4" stop-opacity="0"/><stop offset="1" stop-color="#f6c76e" stop-opacity=".45"/></linearGradient>
         <linearGradient id="s2page" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#efe2c4"/><stop offset="1" stop-color="#fffaf0"/></linearGradient>
         <linearGradient id="s2page2" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#efe2c4"/><stop offset="1" stop-color="#fffaf0"/></linearGradient>
@@ -66,9 +66,9 @@
 
   <!-- 3 · Título -->
   <div class="scene" id="s3">
-    <div class="full" style="background:radial-gradient(ellipse at 50% 40%,#22365f,#0b1429 70%)"></div>
+    <div class="full" style="background:radial-gradient(ellipse at 50% 40%,#4d2b26,#1c0f0e 70%)"></div>
     <div class="center">
-      <div class="label" id="s3l">Un libro para crecer en la fe</div>
+      <div class="label" id="s3l">Una guía práctica para una fe firme</div>
       <div class="gold-line" id="s3g" style="width:0"></div>
       <div class="big" id="s3t">El Camino<br><i>del Discípulo</i></div>
     </div>
@@ -77,9 +77,9 @@
   <!-- 4 · El recorrido -->
   <div class="scene" id="s4">
     <svg class="full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
-      <defs><radialGradient id="s4bg" cx="50%" cy="20%" r="90%"><stop offset="0" stop-color="#3a4d7a"/><stop offset=".5" stop-color="#162649"/><stop offset="1" stop-color="#0b1429"/></radialGradient></defs>
+      <defs><radialGradient id="s4bg" cx="50%" cy="20%" r="90%"><stop offset="0" stop-color="#6b4038"/><stop offset=".5" stop-color="#162649"/><stop offset="1" stop-color="#1c0f0e"/></radialGradient></defs>
       <rect width="1000" height="1000" fill="url(#s4bg)"/>
-      <path d="M0 1000 V720 L180 640 L300 680 L500 250 L700 680 L820 640 L1000 720 V1000Z" fill="#1c2e57"/>
+      <path d="M0 1000 V720 L180 640 L300 680 L500 250 L700 680 L820 640 L1000 720 V1000Z" fill="#3d211d"/>
       <path d="M500 250 L545 345 L520 336 L500 315 L478 340 L455 345Z" fill="#f6e3b4" opacity=".5"/>
       <path id="s4p" d="M500 720 L395 650 L605 570 L420 485 L575 400 L500 275" fill="none" stroke="#f6e3b4" stroke-width="7"
             stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
@@ -89,7 +89,7 @@
 
   <!-- 5 · Sagradas Escrituras -->
   <div class="scene" id="s5">
-    <div class="full" style="background:radial-gradient(circle at 50% 55%,#5b4a33 0%,#22263a 40%,#0b1429 75%)"></div>
+    <div class="full" style="background:radial-gradient(circle at 50% 55%,#5b4a33 0%,#22263a 40%,#1c0f0e 75%)"></div>
     <svg class="full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
       <g id="s5r" transform="translate(500 560)" stroke="#f6e3b4" stroke-width="2" opacity=".35">
       </g>
@@ -103,7 +103,8 @@
 
   <!-- 6 · La cima: fieles hasta el final -->
   <div class="scene" id="s6">
-    <img class="full" id="s6i" src="portada-fondo.png" style="object-fit:cover;transform-origin:50% 52%">
+    <img class="full" id="s6i" src="camino-foto.png" style="object-fit:cover;transform-origin:50% 45%">
+    <div class="full" style="background:linear-gradient(180deg,rgba(28,15,14,.88) 0%,rgba(28,15,14,.35) 38%,rgba(28,15,14,.15) 60%,rgba(28,15,14,.75) 100%)"></div>
     <div class="center" style="justify-content:flex-start;padding-top:calc(var(--u)*13)">
       <div class="big" id="s6t" style="font-size:calc(var(--u)*7.4);opacity:0">Fieles a Cristo<br><i>hasta el final</i></div>
     </div>
@@ -111,13 +112,13 @@
 
   <!-- 7 · Disponible -->
   <div class="scene" id="s7">
-    <div class="full" style="background:radial-gradient(ellipse at 50% 35%,#2a3f6e,#0b1429 70%)"></div>
+    <div class="full" style="background:radial-gradient(ellipse at 50% 35%,#5a3530,#1c0f0e 70%)"></div>
     <div class="center" id="s7c" style="gap:calc(var(--u)*3.2)">
-      <img id="s7b" src="portada.png" style="height:calc(var(--u)*var(--bookH));border-radius:3px 10px 10px 3px;box-shadow:0 calc(var(--u)*3) calc(var(--u)*6) rgba(0,0,0,.6),0 0 0 1px rgba(233,199,122,.4)">
+      <img id="s7b" src="portada-real.png" style="height:calc(var(--u)*var(--bookH));border-radius:3px 10px 10px 3px;box-shadow:0 calc(var(--u)*3) calc(var(--u)*6) rgba(0,0,0,.6),0 0 0 1px rgba(233,199,122,.4)">
       <div>
         <div class="label" style="margin-bottom:calc(var(--u)*1.6)">Ya disponible en</div>
         <div class="big" style="font-size:calc(var(--u)*8)">Amazon</div>
-        <div style="font:500 calc(var(--u)*2.5)/1.4 var(--sans);color:#cfc9bb;margin-top:calc(var(--u)*1.5)">elcaminodeldiscipulo.vercel.app</div>
+        <div style="font:600 calc(var(--u)*3.2)/1.3 var(--serif);color:#f6e3b4;margin-top:calc(var(--u)*1.5)">Nilson Obonaga</div><div style="font:500 calc(var(--u)*2.3)/1.4 var(--sans);color:#cfc9bb;margin-top:calc(var(--u)*.6)">elcaminodeldiscipulo.vercel.app</div>
       </div>
     </div>
   </div>
@@ -171,7 +172,7 @@
     var x=n[2][0], y=n[2][1], right = x < 500;
     html += '<g class="stage-node" id="n'+i+'" opacity="0"><circle cx="'+x+'" cy="'+y+'" r="34" fill="#f6d58e" opacity=".25"/>' +
       '<circle cx="'+x+'" cy="'+y+'" r="15" fill="#f6e3b4"/>' +
-      '<text x="'+x+'" y="'+(y-30)+'" text-anchor="middle" font-size="25" fill="#fff" letter-spacing="2" stroke="#0b1429" stroke-width="7" paint-order="stroke" stroke-linejoin="round">'+n[0].toUpperCase()+'</text></g>';
+      '<text x="'+x+'" y="'+(y-30)+'" text-anchor="middle" font-size="25" fill="#fff" letter-spacing="2" stroke="#1c0f0e" stroke-width="7" paint-order="stroke" stroke-linejoin="round">'+n[0].toUpperCase()+'</text></g>';
   });
   g.innerHTML = html;
   // Rayos escena 5
@@ -221,7 +222,7 @@
     // 5
     $('s5r').setAttribute('transform', 'translate(500 560) rotate(' + (t*4).toFixed(2) + ')');
     // 6
-    $('s6i').style.transform = 'scale(' + (1.05 + ease(prog(t,28.3,35.7))*.35).toFixed(4) + ')';
+    $('s6i').style.transform = 'scale(' + (1.02 + ease(prog(t,28.3,35.7))*.45).toFixed(4) + ')';
     $('s6t').style.opacity = win(t,32.4,35.7,.6).toFixed(3);
     // 7
     var b = ease(prog(t,35.6,37.2));
