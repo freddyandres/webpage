@@ -64,6 +64,11 @@
       "foto": "assets/team/11.jpg",
       "team": "dividido",
       "nombre": "Tío Asmeth y Blanca"
+    },
+    {
+      "foto": "assets/team/12.jpg",
+      "team": "niño",
+      "nombre": "Prima Luisiana"
     }
   ]
 }
