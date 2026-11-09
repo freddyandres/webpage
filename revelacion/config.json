@@ -69,6 +69,11 @@
       "foto": "assets/team/12.jpg",
       "team": "niño",
       "nombre": "Prima Luisiana"
+    },
+    {
+      "foto": "assets/team/13.jpg",
+      "team": "niño",
+      "nombre": "Amiga Nita"
     }
   ]
 }
