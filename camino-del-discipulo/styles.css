@@ -334,3 +334,18 @@ p{margin:0 0 1em}
   .kit__label{padding:28px 10px 9px;font-size:.7rem}
   .kit__label b{font-size:.8rem;line-height:1.25}
 }
+
+/* Aprenderás */
+.about__text .about__q{font:italic 500 1.35rem/1.3 var(--serif);color:var(--gold)!important;margin-top:-.4em}
+.learn{background:#fff}
+.learn__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:l}
+.learn__grid li{counter-increment:l;position:relative;padding:30px 26px 26px;border:1px solid var(--line);border-radius:20px;background:var(--paper);transition:transform .3s var(--ease),box-shadow .3s,border-color .3s}
+.learn__grid li:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 24px 40px -28px rgba(49,25,25,.6)}
+.learn__grid li::after{content:"0" counter(l);position:absolute;right:22px;top:20px;font:700 2.2rem/1 var(--serif);color:rgba(201,154,62,.25)}
+.learn__icon{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:var(--ink);color:var(--gold-2);margin-bottom:18px}
+.learn__icon svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.learn__grid p{margin:0;color:var(--muted);font-size:1.02rem}
+.learn__grid strong{color:var(--ink)}
+@media (max-width:980px){.learn__grid{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.learn__grid{grid-template-columns:1fr}}
+.about__text .eyebrow,.author__text .eyebrow{color:var(--gold)}
